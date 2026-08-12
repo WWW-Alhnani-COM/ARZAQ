@@ -16,6 +16,9 @@ const firebaseConfig = {
   appId: "1:947677437343:web:a7da2164c306f5e3fb31aa",
 };
 
+// Firebase مفعّل ومضبوط مباشرة داخل المشروع
+export const isFirebaseConfigured = true;
+
 // تهيئة Firebase
 const app = initializeApp(firebaseConfig);
 
