@@ -1,25 +1,31 @@
-// نقطة الإعداد الوحيدة لمشروع Firebase — Firestore وAuth وStorage فقط.
-// لا يوجد أي Backend خارجي: Firebase هو الـ Backend الكامل للمنصة.
+// src/firebase/config.js
+// إعداد Firebase لمنصة ARZAQ
+// Firestore + Authentication + Storage فقط
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyDgpCQ3UHymqRMRxjO7bORdPWNKa3wFeig",
+  authDomain: "arzaq-platform.firebaseapp.com",
+  projectId: "arzaq-platform",
+  storageBucket: "arzaq-platform.firebasestorage.app",
+  messagingSenderId: "947677437343",
+  appId: "1:947677437343:web:a7da2164c306f5e3fb31aa",
 };
 
-// إن لم تُملأ متغيرات البيئة، يعمل التطبيق تلقائيًا بوضع العرض التجريبي
-// (بيانات محلية في src/data) بدل الاتصال بـ Firebase — مفيد للتطوير والعرض
-// دون الحاجة لإنشاء مشروع Firebase فورًا.
-export const isFirebaseConfigured = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+// تهيئة Firebase
+const app = initializeApp(firebaseConfig);
 
-export const app = isFirebaseConfigured ? initializeApp(firebaseConfig) : null;
-export const db = isFirebaseConfigured ? getFirestore(app) : null;
-export const auth = isFirebaseConfigured ? getAuth(app) : null;
-export const storage = isFirebaseConfigured ? getStorage(app) : null;
+// Firestore
+export const db = getFirestore(app);
+
+// Authentication
+export const auth = getAuth(app);
+
+// Storage
+export const storage = getStorage(app);
+
+export default app;
