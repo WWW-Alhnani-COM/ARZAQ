@@ -21,8 +21,8 @@ const DEMO_ACCOUNTS = {
     password: "admin123",
     role: "main",
   },
-  "ads@arzaq.com": {
-    password: "ads123",
+  "semomedu@gmail.com": {
+    password: "semo123",
     role: "ads",
   },
 };
