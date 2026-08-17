@@ -3,7 +3,7 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import AdminLoginForm from "../../components/admin/AdminLoginForm";
 
 export default function AdsAdminLoginPage() {
-  const { role, login, authError } = useAdminAuth();
+  const { role, login, authError, loading } = useAdminAuth(); // ✅ تأكد من وجود loading
   const navigate = useNavigate();
 
   if (role === "ads") return <Navigate to="/ads-admin" replace />;
@@ -13,5 +13,13 @@ export default function AdsAdminLoginPage() {
     if (ok) navigate("/ads-admin");
   }
 
-  return <AdminLoginForm role="ads" roleLabel="دخول لوحة الإعلانات" onSubmit={handleSubmit} authError={authError} />;
+  return (
+    <AdminLoginForm 
+      role="ads" 
+      roleLabel="دخول لوحة الإعلانات" 
+      onSubmit={handleSubmit} 
+      authError={authError}  // ✅ تمرير الخطأ
+      loading={loading}      // ✅ تمرير حالة التحميل
+    />
+  );
 }
