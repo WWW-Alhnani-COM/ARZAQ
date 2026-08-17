@@ -19,10 +19,35 @@ export function AdminAuthProvider({ children }) {
     setAuthError("");
     try {
       const result = await authService.signInAdmin(email, password);
-      if (result && result.role === expectedRole) {
-        setRole(result.role);
-        return true;
+      
+      // ✅ التعديل: قبول الدور "ads" حتى لو كان مكتوباً بشكل مختلف
+      if (result) {
+        // إذا كان الدور المطلوب هو "ads"
+        if (expectedRole === "ads") {
+          // اقبل أي دور يحتوي على "ad" (بأي حالة أحرف)
+          const roleLower = String(result.role).toLowerCase();
+          if (roleLower.includes("ad")) {
+            setRole("ads"); // ثبت الدور كـ "ads"
+            return true;
+          }
+        }
+        
+        // إذا كان الدور المطلوب هو "main"
+        if (expectedRole === "main") {
+          const roleLower = String(result.role).toLowerCase();
+          if (roleLower.includes("main") || roleLower === "admin") {
+            setRole("main");
+            return true;
+          }
+        }
+        
+        // المقارنة المباشرة (إذا كانت متطابقة)
+        if (result.role === expectedRole) {
+          setRole(result.role);
+          return true;
+        }
       }
+      
       setAuthError("البريد الإلكتروني أو كلمة المرور غير صحيحة.");
       return false;
     } catch (e) {
@@ -42,4 +67,3 @@ export function AdminAuthProvider({ children }) {
     </AdminAuthContext.Provider>
   );
 }
-
