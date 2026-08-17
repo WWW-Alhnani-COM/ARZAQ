@@ -6,7 +6,7 @@ export default function Logo({ light }) {
       <img
         src={logo}
         alt="ARZAQ"
-        className="w-[50px] h-[50px] object-contain"
+        className="w-[60px] h-[60px] object-contain"
       />
     </div>
   );
