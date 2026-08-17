@@ -1,17 +1,17 @@
-import { useData } from "../../context/DataContext";
-import StatCard from "../../components/common/StatCard";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAdminAuth } from "../../context/AdminAuthContext";
+import AdminLoginForm from "../../components/admin/AdminLoginForm";
 
-export default function AdsAdminDashboardPage() {
-  const { ads, placements } = useData();
-  const active = ads.filter((a) => a.active).length;
-  return (
-    <div>
-      <h2 className="font-display text-xl font-extrabold mb-5" style={{ color: "var(--teal-900)" }}>نظرة عامة على الإعلانات</h2>
-      <div className="grid sm:grid-cols-3 gap-4">
-        <StatCard label="إجمالي الإعلانات" value={ads.length} icon="📢" />
-        <StatCard label="إعلانات نشطة" value={active} icon="🟢" />
-        <StatCard label="مواضع معرّفة" value={placements.length} icon="📌" />
-      </div>
-    </div>
-  );
+export default function AdsAdminLoginPage() {
+  const { role, login, authError } = useAdminAuth();
+  const navigate = useNavigate();
+
+  if (role === "ads") return <Navigate to="/ads-admin" replace />;
+
+  async function handleSubmit(email, password) {
+    const ok = await login("ads", email, password);
+    if (ok) navigate("/ads-admin");
+  }
+
+  return <AdminLoginForm role="ads" roleLabel="دخول لوحة الإعلانات" onSubmit={handleSubmit} authError={authError} />;
 }
