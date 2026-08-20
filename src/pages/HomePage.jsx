@@ -80,7 +80,6 @@ export default function HomePage() {
   // ✅ استخدام الأسماء الإنجليزية (المطابقة لـ Firebase)
   const heroAds = getActiveAds(ads, placements, "home", "hero");
   const footerAds = getActiveAds(ads, placements, "home", "footer");
-  const sidebarAds = getActiveAds(ads, placements, "home", "sidebar");
   
   const published = jobs ? jobs.filter((j) => j.status === "published") : [];
   const featured = published.filter((j) => j.featured);
@@ -94,24 +93,57 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ✅ عرض إعلانات الهيرو (أعلى الصفحة) */}
+      {/* ✅ عرض إعلانات الهيرو - بنر احترافي متجاوب */}
       {heroAds.length > 0 && (
-        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 py-3 border-b border-yellow-200">
-          <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-3">
-            {heroAds.map((ad) => (
-              <a
-                key={ad.id}
-                href={ad.targetUrl || ad.link || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105"
-                style={{ backgroundColor: "var(--orange)" }}
-              >
-                <span>📢</span>
-                {ad.title}
-                <span>←</span>
-              </a>
-            ))}
+        <div className="relative w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 py-2 md:py-3 lg:py-4">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+              {heroAds.map((ad) => (
+                <a
+                  key={ad.id}
+                  href={ad.targetUrl || ad.link || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative group overflow-hidden rounded-lg sm:rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]"
+                >
+                  {/* صورة البنر */}
+                  {ad.imageUrl ? (
+                    <div className="relative w-full" style={{ paddingBottom: '56.25%' /* نسبة 16:9 */ }}>
+                      <img 
+                        src={ad.imageUrl} 
+                        alt={ad.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      {/* طبقة شفافة فوق الصورة للنص */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                      
+                      {/* نص الإعلان فوق الصورة */}
+                      <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 md:p-4">
+                        <h3 className="text-white font-bold text-xs sm:text-sm md:text-base lg:text-lg line-clamp-2 drop-shadow-lg">
+                          {ad.title}
+                        </h3>
+                        <span className="inline-block mt-1 text-white/80 text-[10px] sm:text-xs font-medium bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                          اضغط للمزيد ←
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    // إذا لم توجد صورة - عرض نصي
+                    <div className="relative w-full bg-gradient-to-br from-teal-600 to-orange-600" style={{ paddingBottom: '56.25%' }}>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                        <span className="text-white font-bold text-sm sm:text-base md:text-lg lg:text-xl">
+                          {ad.title}
+                        </span>
+                        <span className="text-white/80 text-[10px] sm:text-xs mt-1">
+                          اضغط للمزيد ←
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -142,21 +174,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ✅ عرض إعلانات الفوتر (أسفل الصفحة) */}
+      {/* ✅ عرض إعلانات الفوتر - بنر احترافي متجاوب */}
       {footerAds.length > 0 && (
-        <div className="bg-gray-50 py-4 border-t border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-4">
-            {footerAds.map((ad) => (
-              <a
-                key={ad.id}
-                href={ad.targetUrl || ad.link || "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow hover:shadow-md transition-all"
-              >
-                {ad.title}
-              </a>
-            ))}
+        <div className="relative w-full bg-gray-100 py-2 sm:py-3 md:py-4 border-t border-gray-200">
+          <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+              {footerAds.map((ad) => (
+                <a
+                  key={ad.id}
+                  href={ad.targetUrl || ad.link || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.05]"
+                >
+                  {ad.imageUrl ? (
+                    <div className="relative w-full" style={{ paddingBottom: '75%' /* نسبة 4:3 */ }}>
+                      <img 
+                        src={ad.imageUrl} 
+                        alt={ad.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                      <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2">
+                        <p className="text-white font-medium text-[8px] sm:text-xs line-clamp-1 drop-shadow-lg">
+                          {ad.title}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative w-full bg-gradient-to-br from-teal-500 to-orange-500" style={{ paddingBottom: '75%' }}>
+                      <div className="absolute inset-0 flex items-center justify-center p-2 text-center">
+                        <span className="text-white font-bold text-[8px] sm:text-xs line-clamp-2">
+                          {ad.title}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -177,4 +234,4 @@ export default function HomePage() {
       </section>
     </div>
   );
-}
+      }
