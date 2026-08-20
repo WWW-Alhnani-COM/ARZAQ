@@ -22,29 +22,50 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur bg-white/90 border-b" style={{ borderColor: "var(--line)" }}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+        {/* الشعار */}
         <Link to="/">
           <Logo />
         </Link>
+
+        {/* ✅ روابط التنقل - تظهر فقط في الكمبيوتر (شاشات كبيرة) */}
         <nav className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((l) => (
-            <NavLink key={l.to} to={l.to} end={l.end} className={linkClass} style={({ isActive }) => (isActive ? { background: "var(--teal)" } : {})}>
+            <NavLink 
+              key={l.to} 
+              to={l.to} 
+              end={l.end} 
+              className={linkClass} 
+              style={({ isActive }) => (isActive ? { background: "var(--teal)" } : {})}
+            >
               {l.label}
             </NavLink>
           ))}
         </nav>
-        <Link to="/jobs" className="hidden md:inline-flex btn-primary rounded-lg px-4 py-2 text-sm font-semibold">
-          تصفّح الوظائف
-        </Link>
-        <button className="lg:hidden p-2" onClick={() => setOpen(!open)} aria-label="القائمة">
+
+        {/* ❌ تم إزالة زر "تصفح الوظائف" */}
+
+        {/* ✅ زر الهامبرجر - يظهر فقط في الشاشات الصغيرة (هواتف) */}
+        <button 
+          className="lg:hidden p-2" 
+          onClick={() => setOpen(!open)} 
+          aria-label="القائمة"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M4 6h16M4 12h16M4 18h16" stroke="#16262A" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
       </div>
+
+      {/* ✅ القائمة المنسدلة للهواتف */}
       {open && (
         <div className="lg:hidden border-t bg-white px-4 py-3 flex flex-col gap-1" style={{ borderColor: "var(--line)" }}>
           {NAV_LINKS.map((l) => (
-            <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="text-right py-2 text-sm font-medium text-gray-700">
+            <Link 
+              key={l.to} 
+              to={l.to} 
+              onClick={() => setOpen(false)} 
+              className="text-right py-2 text-sm font-medium text-gray-700 hover:text-teal-600 transition"
+            >
               {l.label}
             </Link>
           ))}
