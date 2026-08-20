@@ -77,9 +77,10 @@ export default function HomePage() {
   const { jobs, categories, ads, placements, loading } = useData();
   const navigate = useNavigate();
   
-  // ✅ استخدم الأسماء الإنجليزية (بعد التعديل في Firebase)
+  // ✅ استخدام الأسماء الإنجليزية (المطابقة لـ Firebase)
   const heroAds = getActiveAds(ads, placements, "home", "hero");
   const footerAds = getActiveAds(ads, placements, "home", "footer");
+  const sidebarAds = getActiveAds(ads, placements, "home", "sidebar");
   
   const published = jobs ? jobs.filter((j) => j.status === "published") : [];
   const featured = published.filter((j) => j.featured);
@@ -100,7 +101,7 @@ export default function HomePage() {
             {heroAds.map((ad) => (
               <a
                 key={ad.id}
-                href={ad.link || "#"}
+                href={ad.targetUrl || ad.link || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2 text-sm font-bold text-white rounded-full shadow-md hover:shadow-lg transition-all hover:scale-105"
@@ -148,7 +149,7 @@ export default function HomePage() {
             {footerAds.map((ad) => (
               <a
                 key={ad.id}
-                href={ad.link || "#"}
+                href={ad.targetUrl || ad.link || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg shadow hover:shadow-md transition-all"
@@ -176,4 +177,4 @@ export default function HomePage() {
       </section>
     </div>
   );
-            }
+}
