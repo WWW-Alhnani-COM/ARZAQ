@@ -77,9 +77,9 @@ export default function HomePage() {
   const { jobs, categories, ads, placements, loading } = useData();
   const navigate = useNavigate();
   
-  // ✅ استخدم الأسماء العربية كما في Firebase
-  const heroAds = getActiveAds(ads, placements, "الرئيسية", "أعلى الصفحة");
-  const footerAds = getActiveAds(ads, placements, "الرئيسية", "أسفل الصفحة");
+  // ✅ استخدم الأسماء الإنجليزية (بعد التعديل في Firebase)
+  const heroAds = getActiveAds(ads, placements, "home", "hero");
+  const footerAds = getActiveAds(ads, placements, "home", "footer");
   
   const published = jobs ? jobs.filter((j) => j.status === "published") : [];
   const featured = published.filter((j) => j.featured);
@@ -93,7 +93,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* ✅ عرض إعلانات أعلى الصفحة */}
+      {/* ✅ عرض إعلانات الهيرو (أعلى الصفحة) */}
       {heroAds.length > 0 && (
         <div className="bg-gradient-to-r from-yellow-50 to-orange-50 py-3 border-b border-yellow-200">
           <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-3">
@@ -141,7 +141,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ✅ عرض إعلانات أسفل الصفحة */}
+      {/* ✅ عرض إعلانات الفوتر (أسفل الصفحة) */}
       {footerAds.length > 0 && (
         <div className="bg-gray-50 py-4 border-t border-gray-200">
           <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-center gap-4">
@@ -176,4 +176,4 @@ export default function HomePage() {
       </section>
     </div>
   );
-                }
+            }
