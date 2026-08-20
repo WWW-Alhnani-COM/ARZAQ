@@ -27,7 +27,7 @@ export default function Header() {
           <Logo />
         </Link>
 
-        {/* ✅ روابط التنقل - تظهر فقط في الكمبيوتر (شاشات كبيرة) */}
+        {/* ✅ روابط التنقل - تظهر فقط في الكمبيوتر */}
         <nav className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((l) => (
             <NavLink 
@@ -42,11 +42,9 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* ❌ تم إزالة زر "تصفح الوظائف" */}
-
-        {/* ✅ زر الهامبرجر - يظهر فقط في الشاشات الصغيرة (هواتف) */}
+        {/* ✅ زر الهامبرجر - يظهر فقط في الهواتف (شاشات أقل من 1024px) */}
         <button 
-          className="lg:hidden p-2" 
+          className="flex lg:hidden p-2 hover:bg-gray-100 rounded-lg transition" 
           onClick={() => setOpen(!open)} 
           aria-label="القائمة"
         >
@@ -54,9 +52,11 @@ export default function Header() {
             <path d="M4 6h16M4 12h16M4 18h16" stroke="#16262A" strokeWidth="2" strokeLinecap="round" />
           </svg>
         </button>
+
+        {/* ❌ تم إزالة زر "تصفح الوظائف" نهائياً */}
       </div>
 
-      {/* ✅ القائمة المنسدلة للهواتف */}
+      {/* ✅ القائمة المنسدلة - تظهر فقط في الهواتف */}
       {open && (
         <div className="lg:hidden border-t bg-white px-4 py-3 flex flex-col gap-1" style={{ borderColor: "var(--line)" }}>
           {NAV_LINKS.map((l) => (
