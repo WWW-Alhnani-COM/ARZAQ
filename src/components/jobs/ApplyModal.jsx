@@ -64,7 +64,7 @@ export default function ApplyModal({ job, onClose }) {
           </div>
           <button type="submit" className="btn-primary w-full rounded-xl py-3 font-bold text-sm flex items-center justify-center gap-2">
             <span>تقديم عبر واتساب</span>
-            <span>💬</span>
+            
           </button>
           <p className="text-[11px] text-gray-400 text-center">
             سيتم فتح واتساب برسالة جاهزة تحتوي بيانات الوظيفة وبياناتك لإرسالها إلى فريق التوظيف.
