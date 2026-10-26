@@ -16,7 +16,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
 
   const set = (k, v) => setForm((prev) => ({ ...prev, [k]: v }));
 
-  // ✅ دالة رفع الصورة إلى ImgBB
+  // رفع الصورة إلى Firebase Storage
   async function handleImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -35,7 +35,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
 
     setUploading(true);
     try {
-      // رفع الصورة إلى ImgBB
+      // رفع الصورة إلى Firebase Storage
       const imageUrl = await uploadImageToImgBB(file);
       setForm(prev => ({ ...prev, imageUrl }));
       setPreview(imageUrl);
@@ -136,7 +136,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div className="bg-teal-500 h-2 rounded-full animate-pulse w-full"></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">جاري رفع الصورة إلى ImgBB...</p>
+                <p className="text-xs text-gray-500 mt-1">جاري رفع الصورة إلى Firebase Storage...</p>
               </div>
             )}
           </div>
