@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { todayISO } from "../../utils/ids";
-import { uploadImageToImgBB } from "../../services/imageUploadService";
+import { uploadAdImageToStorage } from "../../services/imageUploadService";
 
 export default function AdFormModal({ initial, onClose, onSave }) {
   const [form, setForm] = useState(initial || { 
@@ -36,7 +36,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
     setUploading(true);
     try {
       // رفع الصورة إلى Firebase Storage
-      const imageUrl = await uploadImageToImgBB(file);
+      const imageUrl = await uploadAdImageToStorage(file);
       setForm(prev => ({ ...prev, imageUrl }));
       setPreview(imageUrl);
     } catch (error) {
