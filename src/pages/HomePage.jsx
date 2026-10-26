@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import JobCard from "../components/jobs/JobCard";
 import SectionHeading from "../components/common/SectionHeading";
+import { InteractiveGridPattern } from "../components/ui/interactive-grid-pattern";
 
 const ROLES = ["مطوّر برمجيات", "محاسب أول", "أخصائي تسويق", "مهندس مدني", "معلم/ة"];
 
@@ -31,7 +32,16 @@ function Hero() {
     <section className="brand-grad relative isolate overflow-hidden">
       <div aria-hidden="true" className="absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-20 md:h-96 md:w-96" style={{ background: "var(--orange)" }} />
       <div aria-hidden="true" className="absolute -bottom-32 -right-20 h-64 w-64 rounded-full border border-white/10 md:h-80 md:w-80" />
-      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-16 text-center sm:pb-20 md:px-8 md:pt-20 md:pb-24">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <InteractiveGridPattern
+          width={36}
+          height={36}
+          squares={[32, 16]}
+          className="inset-x-0 inset-y-[-20%] h-[140%] w-full border-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,white_0%,transparent_78%)]"
+          squaresClassName="stroke-white/20"
+        />
+      </div>
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-16 pt-16 text-center sm:pb-20 md:px-8 md:pt-20 md:pb-24">
         <span className="mb-6 inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-xs font-semibold text-white/85">
           بلا تسجيل • التقديم مباشرة عبر واتساب
         </span>
