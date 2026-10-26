@@ -36,7 +36,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
     setUploading(true);
     try {
       // رفع الصورة إلى ImgBB
-      const imageUrl = await uploadImageToFirebaseStorage(file);
+      const imageUrl = await uploadImageToImgBB(file);
       setForm(prev => ({ ...prev, imageUrl }));
       setPreview(imageUrl);
     } catch (error) {
