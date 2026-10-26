@@ -76,7 +76,7 @@ export default function JobDetailPage() {
                 style={{ background: "var(--teal-100)", color: "var(--teal-900)" }}
                 aria-hidden="true"
               >
-                {job.organizationLogo || "🏢"}
+                {job.organizationLogo && !/\p{Extended_Pictographic}/u.test(job.organizationLogo) ? job.organizationLogo : (job.organizationName?.trim()?.[0] || "ش")}
               </div>
               <div className="min-w-0">
                 <div className="mb-2 flex flex-wrap items-center gap-2">
