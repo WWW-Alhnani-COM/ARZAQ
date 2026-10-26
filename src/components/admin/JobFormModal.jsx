@@ -3,13 +3,25 @@ import { useData } from "../../context/DataContext";
 import { WORK_MODES, JOB_TYPES, EXP_LEVELS, JOB_STATUSES, STATUS_LABEL } from "../../utils/constants";
 import { todayISO } from "../../utils/ids";
 
+const JOB_TITLE_OPTIONS = [
+  "مهندس برمجيات",
+  "مدير مشاريع",
+  "مدير تقنية المعلومات",
+  "مصمم UI / UX",
+  "مهندس Full-Stack",
+  "مهندس Front-End",
+  "مدير تسويق",
+  "مهندس أنظمة مدمجة",
+];
+
 const Field = ({ label, children }) => (
   <div>
-    <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
+    <label className="mb-1.5 block text-xs font-semibold text-[var(--teal-800)]">{label}</label>
     {children}
   </div>
 );
-const inputCls = "w-full border border-gray-200 rounded-lg px-3 py-2 text-sm";
+
+const inputCls = "w-full rounded-xl border border-[var(--line)] bg-white px-3 py-2.5 text-sm text-[var(--teal-900)] transition placeholder:text-gray-400 focus:border-[var(--teal)] focus:outline-none focus:ring-2 focus:ring-[var(--teal-100)]";
 
 export default function JobFormModal({ initial, onClose, onSave }) {
   const { categories, cities, organizations } = useData();
@@ -30,6 +42,9 @@ export default function JobFormModal({ initial, onClose, onSave }) {
   } : blank;
 
   const [form, setForm] = useState(toForm(initial));
+  const [customTitle, setCustomTitle] = useState(
+    Boolean(initial?.jobTitle && !JOB_TITLE_OPTIONS.includes(initial.jobTitle))
+  );
   const set = (k, v) => setForm((prev) => ({ ...prev, [k]: v }));
 
   function submit(e) {
@@ -49,15 +64,44 @@ export default function JobFormModal({ initial, onClose, onSave }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center modal-backdrop p-4" onClick={onClose}>
-      <div className="bg-white w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 fade-up" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="font-display font-bold text-lg" style={{ color: "var(--teal-900)" }}>{initial ? "تعديل الوظيفة" : "إضافة وظيفة جديدة"}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-xl leading-none">×</button>
+    <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="fade-up max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-[var(--line)] bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-5 flex items-center justify-between">
+          <h3 className="font-display text-lg font-bold" style={{ color: "var(--teal-900)" }}>{initial ? "تعديل الوظيفة" : "إضافة وظيفة جديدة"}</h3>
+          <button type="button" onClick={onClose} aria-label="إغلاق" className="rounded-lg px-2 text-xl leading-none text-gray-400 transition hover:bg-[var(--teal-100)] hover:text-[var(--teal-900)]">×</button>
         </div>
         <form onSubmit={submit} className="space-y-5">
-          <div className="grid md:grid-cols-2 gap-4">
-            <Field label="اسم الوظيفة"><input required value={form.jobTitle} onChange={(e) => set("jobTitle", e.target.value)} className={inputCls} /></Field>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="المسمى الوظيفي">
+              <select
+                required
+                value={customTitle ? "__custom__" : form.jobTitle}
+                onChange={(e) => {
+                  if (e.target.value === "__custom__") {
+                    setCustomTitle(true);
+                    set("jobTitle", "");
+                  } else {
+                    setCustomTitle(false);
+                    set("jobTitle", e.target.value);
+                  }
+                }}
+                className={inputCls}
+              >
+                <option value="">اختر المسمى الوظيفي</option>
+                {JOB_TITLE_OPTIONS.map((title) => <option key={title} value={title}>{title}</option>)}
+                <option value="__custom__">مسمى آخر — إدخال يدوي</option>
+              </select>
+              {customTitle && (
+                <input
+                  required
+                  autoFocus
+                  value={form.jobTitle}
+                  onChange={(e) => set("jobTitle", e.target.value)}
+                  placeholder="اكتب المسمى الوظيفي"
+                  className={`${inputCls} mt-2`}
+                />
+              )}
+            </Field>
             <Field label="الجهة">
               <select required value={form.organizationName} onChange={(e) => set("organizationName", e.target.value)} className={inputCls}>
                 <option value="">اختر الجهة</option>
@@ -74,7 +118,7 @@ export default function JobFormModal({ initial, onClose, onSave }) {
             <Field label="آخر موعد للتقديم"><input type="date" value={form.expiryDate} onChange={(e) => set("expiryDate", e.target.value)} className={inputCls} /></Field>
           </div>
           <Field label="وصف الوظيفة"><textarea required rows="3" value={form.description} onChange={(e) => set("description", e.target.value)} className={inputCls}></textarea></Field>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <Field label="المسؤوليات (سطر لكل عنصر)"><textarea rows="3" value={form.responsibilities} onChange={(e) => set("responsibilities", e.target.value)} className={inputCls}></textarea></Field>
             <Field label="المؤهلات (سطر لكل عنصر)"><textarea rows="3" value={form.requirements} onChange={(e) => set("requirements", e.target.value)} className={inputCls}></textarea></Field>
             <Field label="المميزات (سطر لكل عنصر)"><textarea rows="3" value={form.benefits} onChange={(e) => set("benefits", e.target.value)} className={inputCls}></textarea></Field>
@@ -84,17 +128,17 @@ export default function JobFormModal({ initial, onClose, onSave }) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-6 pt-2">
-            <label className="flex items-center gap-2 text-sm font-medium"><input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} /> وظيفة مميزة</label>
-            <div className="flex items-center gap-2 text-sm font-medium">
+            <label className="flex items-center gap-2 text-sm font-medium text-[var(--teal-900)]"><input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} className="accent-[var(--teal)]" /> وظيفة مميزة</label>
+            <div className="flex items-center gap-2 text-sm font-medium text-[var(--teal-900)]">
               الحالة:
-              <select value={form.status} onChange={(e) => set("status", e.target.value)} className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm">
+              <select value={form.status} onChange={(e) => set("status", e.target.value)} className={inputCls + " w-auto"}>
                 {JOB_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
               </select>
             </div>
           </div>
-          <div className="flex gap-3 pt-2">
-            <button type="submit" className="btn-primary rounded-xl px-6 py-2.5 font-bold text-sm">{initial ? "حفظ التعديلات" : "إضافة الوظيفة"}</button>
-            <button type="button" onClick={onClose} className="btn-outline rounded-xl px-6 py-2.5 font-bold text-sm">إلغاء</button>
+          <div className="flex gap-3 border-t border-[var(--line)] pt-4">
+            <button type="submit" className="btn-primary rounded-xl px-6 py-2.5 text-sm font-bold">{initial ? "حفظ التعديلات" : "إضافة الوظيفة"}</button>
+            <button type="button" onClick={onClose} className="btn-outline rounded-xl px-6 py-2.5 text-sm font-bold">إلغاء</button>
           </div>
         </form>
       </div>
