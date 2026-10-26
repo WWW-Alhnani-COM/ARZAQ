@@ -191,6 +191,27 @@ export default function HomePage() {
         </section>
       )}
 
+      <section className="mx-auto max-w-5xl px-4 py-12 text-center md:px-8 md:py-16">
+        <h2 className="font-display text-2xl font-extrabold" style={{ color: "var(--teal-900)" }}>استكشف حسب المجال</h2>
+        <p className="mt-2 text-sm text-gray-500">اختر المجال الذي يناسب خبرتك للوصول إلى الوظائف المرتبطة به.</p>
+        {categories.length ? (
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <button
+                key={category.id || category.name}
+                type="button"
+                onClick={() => navigate(`/jobs?category=${encodeURIComponent(category.name)}`)}
+                className="card rounded-full px-4 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2"
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6"><EmptySection>ستظهر التصنيفات هنا عند توفرها.</EmptySection></div>
+        )}
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 pb-12 pt-0 md:px-8 md:pb-16">
         <SectionHeading
           eyebrow="فرص منتقاة"
@@ -221,27 +242,6 @@ export default function HomePage() {
             <EmptySection>لا توجد وظائف منشورة حاليًا. يرجى العودة لاحقًا للاطلاع على الفرص الجديدة.</EmptySection>
           )}
         </div>
-      </section>
-
-      <section className="mx-auto max-w-5xl px-4 py-12 text-center md:px-8 md:py-16">
-        <h2 className="font-display text-2xl font-extrabold" style={{ color: "var(--teal-900)" }}>استكشف حسب التصنيف</h2>
-        <p className="mt-2 text-sm text-gray-500">اختر المجال الذي يناسب خبرتك للوصول إلى الوظائف المرتبطة به.</p>
-        {categories.length ? (
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.id || category.name}
-                type="button"
-                onClick={() => navigate(`/jobs?category=${encodeURIComponent(category.name)}`)}
-                className="card rounded-full px-4 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2"
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="mt-6"><EmptySection>ستظهر التصنيفات هنا عند توفرها.</EmptySection></div>
-        )}
       </section>
 
       {footerAds.length > 0 && (
