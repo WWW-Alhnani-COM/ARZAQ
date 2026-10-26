@@ -1,17 +1,30 @@
+import { Link } from "react-router-dom";
 import { useData } from "../../context/DataContext";
-import StatCard from "../../components/common/StatCard";
+
+const fmt = (value) => new Intl.NumberFormat("ar").format(value || 0);
 
 export default function AdsAdminDashboardPage() {
-  const { ads, placements } = useData();
-  const active = ads.filter((a) => a.active).length;
-  return (
-    <div>
-      <h2 className="font-display text-xl font-extrabold mb-5" style={{ color: "var(--teal-900)" }}>نظرة عامة على الإعلانات</h2>
-      <div className="grid sm:grid-cols-3 gap-4">
-        <StatCard label="إجمالي الإعلانات" value={ads.length} icon="📢" />
-        <StatCard label="إعلانات نشطة" value={active} icon="🟢" />
-        <StatCard label="مواضع معرّفة" value={placements.length} icon="📌" />
-      </div>
-    </div>
-  );
+  const { ads, placements, loading } = useData();
+  const active = ads.filter((ad) => Boolean(ad.active)).length;
+  const inactive = ads.length - active;
+  const today = new Date().toISOString().slice(0, 10);
+  const current = ads.filter((ad) => ad.active && (!ad.startDate || ad.startDate <= today) && (!ad.endDate || ad.endDate >= today)).length;
+  const placementStats = placements.map((placement) => ({ ...placement, count: ads.filter((ad) => ad.placement === placement.id || ad.placementId === placement.id || ad.placement === placement.name || ad.placementName === placement.name).length })).sort((a, b) => b.count - a.count).slice(0, 6);
+  const recentAds = [...ads].slice(0, 6);
+  const total = Math.max(1, ads.length);
+  const stats = [
+    { label: "إجمالي الإعلانات", value: ads.length, detail: "كل الإعلانات المسجلة", icon: "▣", tone: "teal" },
+    { label: "إعلانات مفعّلة", value: active, detail: "مفعّلة من لوحة التحكم", icon: "✓", tone: "green" },
+    { label: "نشطة ضمن الفترة", value: current, detail: "وفق تاريخ البداية والنهاية", icon: "◷", tone: "orange" },
+    { label: "مواضع العرض", value: placements.length, detail: "أماكن ظهور الإعلانات", icon: "⌖", tone: "blue" },
+  ];
+  return <div className="dashboard-page" dir="rtl">
+    <section className="dashboard-welcome"><div><div className="dashboard-eyebrow"><span className="dashboard-live-dot" /> إدارة المساحات الإعلانية</div><h1>نظرة عامة على الإعلانات</h1><p>راقب الإعلانات ومواضع ظهورها من مكان واحد.</p></div><div className="dashboard-welcome-actions"><span className="dashboard-updated">● البيانات من قاعدة المنصة</span><Link to="/ads-admin/ads" className="dashboard-primary-action">＋ إضافة إعلان</Link></div></section>
+    <section className="dashboard-stat-grid" aria-label="إحصائيات الإعلانات">{stats.map((stat) => <article className="dashboard-stat-card" key={stat.label}><div className="dashboard-stat-top"><span>{stat.label}</span><span className={"dashboard-stat-icon " + stat.tone}>{stat.icon}</span></div><div className="dashboard-stat-value">{loading ? "…" : fmt(stat.value)}</div><div className="dashboard-stat-detail">{stat.detail}</div></article>)}</section>
+    <section className="dashboard-main-grid">
+      <article className="dashboard-panel"><div className="dashboard-panel-heading"><div><h2>حالة الإعلانات</h2><p>نسبة الإعلانات المفعّلة إلى الإجمالي</p></div><Link to="/ads-admin/ads">إدارة الإعلانات ←</Link></div><div className="dashboard-status-total"><strong>{fmt(ads.length)}</strong><span>إعلان مسجل</span></div><div className="dashboard-status-track"><span style={{ width: active / total * 100 + "%", background: "#15966b" }} /><span style={{ width: inactive / total * 100 + "%", background: "#cbd3d8" }} /></div><div className="dashboard-status-legend"><div><span className="dashboard-legend-name"><i style={{ background: "#15966b" }} />مفعّلة</span><strong>{fmt(active)} <small>{ads.length ? Math.round(active / ads.length * 100) : 0}%</small></strong></div><div><span className="dashboard-legend-name"><i style={{ background: "#cbd3d8" }} />متوقفة</span><strong>{fmt(inactive)} <small>{ads.length ? Math.round(inactive / ads.length * 100) : 0}%</small></strong></div></div></article>
+      <article className="dashboard-panel"><div className="dashboard-panel-heading"><div><h2>الإعلانات حسب موضع العرض</h2><p>عدد الإعلانات المرتبطة بكل موضع</p></div><Link to="/ads-admin/placements">عرض المواضع ←</Link></div>{placementStats.length ? <div className="dashboard-category-list">{placementStats.map((placement, index) => <div className="dashboard-category-row" key={placement.id || placement.name}><div className="dashboard-category-label"><span className="dashboard-category-rank">{index + 1}</span><span>{placement.name || placement.title || "موضع عرض"}</span><strong>{fmt(placement.count)}</strong></div><div className="dashboard-bar-track"><span style={{ width: placement.count / Math.max(1, ...placementStats.map((item) => item.count)) * 100 + "%" }} /></div></div>)}</div> : <div className="dashboard-empty">لم تتم إضافة مواضع عرض بعد.</div>}</article>
+    </section>
+    <section className="dashboard-panel dashboard-recent-panel"><div className="dashboard-panel-heading"><div><h2>الإعلانات الأخيرة</h2><p>مراجعة سريعة لحالة الإعلانات المسجلة</p></div><Link to="/ads-admin/ads">إدارة جميع الإعلانات ←</Link></div><div className="dashboard-table-wrap"><table className="dashboard-table"><thead><tr><th>عنوان الإعلان</th><th>تاريخ البداية</th><th>تاريخ النهاية</th><th>الحالة</th></tr></thead><tbody>{recentAds.map((ad) => <tr key={ad.id}><td><strong>{ad.title || "بدون عنوان"}</strong></td><td>{ad.startDate || "—"}</td><td>{ad.endDate || "مفتوح"}</td><td><span className={"dashboard-status-pill " + (ad.active ? "published" : "archived")}>{ad.active ? "مفعّل" : "متوقف"}</span></td></tr>)}{!recentAds.length && <tr><td colSpan="4"><div className="dashboard-empty">لا توجد إعلانات مسجلة حتى الآن.</div></td></tr>}</tbody></table></div><div className="dashboard-panel-footer"><span>عرض {fmt(recentAds.length)} من {fmt(ads.length)} إعلان</span><span>{fmt(placements.length)} موضع عرض</span></div></section>
+  </div>;
 }
