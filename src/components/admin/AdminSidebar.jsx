@@ -26,15 +26,17 @@ export default function AdminSidebar({ items, active, setActive, onLogout, title
   );
 
   const renderLogout = (isCollapsed = false, closeOnSelect = false) => (
-    <div className="border-t p-3" style={{ borderColor: "var(--line)" }}>
+    <div className={"admin-sidebar-footer border-t " + (isCollapsed ? "p-1.5" : "p-3")} style={{ borderColor: "var(--line)" }}>
+      {!isCollapsed && <div className="admin-sidebar-role">{title}</div>}
       <button
         type="button"
         title={isCollapsed ? "تسجيل الخروج" : undefined}
+        aria-label="تسجيل الخروج"
         onClick={() => {
           onLogout();
           if (closeOnSelect && onClose) onClose();
         }}
-        className={"w-full rounded-xl py-3 text-sm font-semibold text-red-500 transition hover:bg-red-50 flex items-center gap-3 " + (isCollapsed ? "justify-center" : "justify-center")}
+        className={"admin-sidebar-logout w-full rounded-xl text-sm font-semibold transition flex items-center " + (isCollapsed ? "justify-center p-2" : "justify-center gap-2 px-2 py-3")}
       >
         <span aria-hidden="true">↪</span>
         {!isCollapsed && <span>تسجيل الخروج</span>}
@@ -45,11 +47,11 @@ export default function AdminSidebar({ items, active, setActive, onLogout, title
   return (
     <>
       <aside
-        className={"hidden md:flex shrink-0 bg-white border-l h-screen sticky top-0 flex-col transition-[width] duration-300 ease-in-out " + (collapsed ? "w-[5.25rem]" : "w-64")}
+        className={"hidden md:flex shrink-0 bg-white border-l h-screen sticky top-0 flex-col transition-[width] duration-300 ease-in-out " + (collapsed ? "w-14" : "w-64")}
         style={{ borderColor: "var(--line)" }}
         aria-label={title}
       >
-        <div className={"border-b p-4 " + (collapsed ? "flex flex-col items-center gap-4" : "")} style={{ borderColor: "var(--line)" }}>
+        <div className={"border-b " + (collapsed ? "p-1.5 flex flex-col items-center gap-2" : "p-4")} style={{ borderColor: "var(--line)" }}>
           <div className={"flex items-center gap-3 " + (collapsed ? "justify-center" : "justify-between")}>
             <div className="min-w-0 overflow-hidden">
               <Logo />
@@ -57,7 +59,7 @@ export default function AdminSidebar({ items, active, setActive, onLogout, title
             <button
               type="button"
               onClick={() => setCollapsed((value) => !value)}
-              className="shrink-0 rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+              className={"admin-sidebar-collapse shrink-0 rounded-lg transition " + (collapsed ? "p-1" : "p-2")}
               aria-label={collapsed ? "توسيع القائمة الجانبية" : "طي القائمة الجانبية"}
               title={collapsed ? "توسيع القائمة" : "طي القائمة"}
             >
