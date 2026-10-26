@@ -36,7 +36,7 @@ export default function AdminLayout() {
   const { logout } = useAdminAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const active = location.pathname.replace(/^\/admin\\/?/, "");
+  const active = location.pathname.slice("/admin".length).replace(/^\/?/, "");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("admin-dark"));
 
