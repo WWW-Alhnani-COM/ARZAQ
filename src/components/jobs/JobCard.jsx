@@ -26,7 +26,7 @@ export default function JobCard({ job }) {
           style={{ background: "var(--teal-100)", color: "var(--teal-900)" }}
           aria-hidden="true"
         >
-          {job.organizationLogo || "🏢"}
+          {job.organizationLogo && !/\p{Extended_Pictographic}/u.test(job.organizationLogo) ? job.organizationLogo : (job.organizationName?.trim()?.[0] || "ش")}
         </div>
         <div className="min-w-0 flex-1">
           <div className="mb-1.5 flex flex-wrap items-center gap-2">
@@ -52,8 +52,8 @@ export default function JobCard({ job }) {
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pr-[60px] text-xs text-gray-600 sm:pr-0 sm:gap-x-5 sm:text-sm">
-        {job.city && <span className="inline-flex items-center gap-1.5"><span aria-hidden="true">📍</span>{job.city}</span>}
-        {job.workMode && <span className="inline-flex items-center gap-1.5"><span aria-hidden="true">💻</span>{job.workMode}</span>}
+        {job.city && <span>{job.city}</span>}
+        {job.workMode && <span>{job.workMode}</span>}
         {publishedDate && <span className="text-gray-400">نُشرت {publishedDate}</span>}
       </div>
 
