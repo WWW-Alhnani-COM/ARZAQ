@@ -53,7 +53,7 @@ export default function AdminJobsPage() {
                   <span className={"text-[11px] font-bold px-2 py-1 rounded-full status-" + j.status}>{STATUS_LABEL[j.status]}</span>
                 </td>
                 <td>
-                  <div onClick={() => updateJob(j.id, { featured: !j.featured })} className={"switch " + (j.featured ? "on" : "off")}></div>
+                  <button type="button" onClick={() => updateJob(j.id, { featured: !j.featured })} role="switch" aria-checked={Boolean(j.featured)} aria-label={"تمييز " + j.jobTitle} className={"switch " + (j.featured ? "on" : "off")}></button>
                 </td>
                 <td className="text-gray-400 text-xs">{j.publishDate}</td>
                 <td>
@@ -87,7 +87,7 @@ export default function AdminJobsPage() {
                 </div>
                 <div className="mt-3 flex items-center gap-2 flex-wrap">
                   <span className={"text-[11px] font-bold px-2 py-1 rounded-full status-" + j.status}>{STATUS_LABEL[j.status]}</span>
-                  <div onClick={() => updateJob(j.id, { featured: !j.featured })} className={"switch " + (j.featured ? "on" : "off")}></div>
+                  <button type="button" onClick={() => updateJob(j.id, { featured: !j.featured })} role="switch" aria-checked={Boolean(j.featured)} aria-label={"تمييز " + j.jobTitle} className={"switch " + (j.featured ? "on" : "off")}></button>
                 </div>
               </div>
             </div>

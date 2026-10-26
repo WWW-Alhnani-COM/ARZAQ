@@ -10,9 +10,9 @@ export default function AdminOrganizationsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <h2 className="font-display text-xl font-extrabold" style={{ color: "var(--teal-900)" }}>الجهات والشركات</h2>
-        <button onClick={() => { setEditing(null); setShowForm(true); }} className="btn-primary rounded-lg px-4 py-2 text-sm font-bold">+ إضافة جهة</button>
+        <button onClick={() => { setEditing(null); setShowForm(true); }} className="btn-primary rounded-lg px-4 py-3 sm:py-2 text-sm font-bold w-full sm:w-auto">+ إضافة جهة</button>
       </div>
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {organizations.map((o) => (
