@@ -103,7 +103,7 @@ export default function JobsPage() {
               )}
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
+            <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-sm">
               {results.map((job) => <JobCard key={job.id} job={job} />)}
             </div>
           )}
