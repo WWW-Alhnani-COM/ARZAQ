@@ -112,7 +112,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
               <label className={`flex-1 cursor-pointer ${uploading ? "opacity-50" : ""}`}>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg px-4 py-3 text-center hover:border-teal-500 transition">
                   <span className="text-sm text-gray-500">
-                    {uploading ? " جاري الرفع..." : " اضغط لاختيار صورة"}
+                    {uploading ? "جاري الرفع..." : "اضغط لاختيار صورة"}
                   </span>
                 </div>
                 <input
@@ -184,7 +184,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
               className="btn-primary rounded-xl px-6 py-2.5 font-bold text-sm"
               disabled={uploading}
             >
-              {uploading ? " جاري الرفع..." : " حفظ"}
+              {uploading ? " جاري الرفع..." : "حفظ"}
             </button>
             <button
               type="button"
