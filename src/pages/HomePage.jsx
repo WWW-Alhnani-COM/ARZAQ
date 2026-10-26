@@ -115,18 +115,18 @@ function AdBanner({ ad, size = "hero" }) {
         <img
           src={ad.imageUrl}
           alt=""
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
+          className="absolute inset-0 z-0 h-full w-full object-cover object-center"
           loading={isHero ? "eager" : "lazy"}
           onError={() => setImageFailed(true)}
         />
       )}
       <div
         aria-hidden="true"
-        className={`absolute inset-0 -z-10 ${isHero
+        className={`absolute inset-0 z-10 ${isHero
           ? "bg-gradient-to-l from-[#10282dcc] via-[#10282d80] to-[#10282d08]"
           : "bg-gradient-to-l from-[#10282dcc] via-[#10282d70] to-[#10282d18]"}`}
       />
-      <div className="flex h-full w-full items-center justify-start p-3 text-right sm:p-5 md:p-7">
+      <div className="relative z-20 flex h-full w-full items-center justify-start p-3 text-right sm:p-5 md:p-7">
         <div className="w-full max-w-[94%] sm:max-w-[80%] md:max-w-[72%]">
           <span className="mb-1 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/20 px-2 py-0.5 text-[9px] font-bold text-white/90 backdrop-blur-md sm:mb-2 sm:px-2.5 sm:py-1 sm:text-xs">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--orange)]" aria-hidden="true" />
@@ -143,7 +143,7 @@ function AdBanner({ ad, size = "hero" }) {
           )}
         </div>
       </div>
-      <span aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-1 w-1/3 bg-[var(--orange)] transition-all duration-500 group-hover:w-full" />
+      <span aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 z-30 h-1 w-1/3 bg-[var(--orange)] transition-all duration-500 group-hover:w-full" />
     </a>
   );
 }
