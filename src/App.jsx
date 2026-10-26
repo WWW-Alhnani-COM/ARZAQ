@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { DataProvider } from "./context/DataContext";
 import { AdminAuthProvider } from "./context/AdminAuthContext";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AppErrorBoundary from "./components/common/AppErrorBoundary";
 
 import PublicLayout from "./components/layout/PublicLayout";
 import HomePage from "./pages/HomePage";
@@ -39,6 +40,7 @@ export default function App() {
     <DataProvider>
       <AdminAuthProvider>
         <BrowserRouter>
+          <AppErrorBoundary>
           <Routes>
             <Route element={<PublicLayout />}>
               <Route path="/" element={<HomePage />} />
@@ -85,6 +87,7 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Route>
           </Routes>
+          </AppErrorBoundary>
         </BrowserRouter>
       </AdminAuthProvider>
     </DataProvider>
