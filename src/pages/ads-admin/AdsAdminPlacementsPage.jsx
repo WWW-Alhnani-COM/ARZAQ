@@ -10,7 +10,7 @@ export default function AdsAdminPlacementsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
           <h2 className="font-display text-xl font-extrabold" style={{ color: "var(--teal-900)" }}>مواضع الإعلانات</h2>
           <p className="text-xs text-gray-400 mt-1">تحديد أين وبأي أولوية يظهر كل إعلان</p>
@@ -18,7 +18,7 @@ export default function AdsAdminPlacementsPage() {
         <button 
           disabled={ads.length === 0} 
           onClick={() => setShowForm(true)} 
-          className="btn-primary rounded-lg px-4 py-2 text-sm font-bold disabled:opacity-40"
+          className="btn-primary rounded-lg px-4 py-3 sm:py-2 text-sm font-bold w-full sm:w-auto disabled:opacity-40"
         >
           + إضافة موضع
         </button>
