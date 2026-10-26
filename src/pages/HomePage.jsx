@@ -88,7 +88,6 @@ function getActiveAds(ads, placements, page, position) {
 function AdBanner({ ad, size = "hero" }) {
   const [imageFailed, setImageFailed] = useState(false);
   const isHero = size === "hero";
-  const isFooter = size === "footer";
   const href = ad.targetUrl || ad.link;
 
   return (
@@ -116,7 +115,7 @@ function AdBanner({ ad, size = "hero" }) {
         />
       )}
       <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-gradient-to-l from-black/70 via-black/35 to-black/10"}`} />
-      <div className={`relative flex min-h-inherit h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "min-h-[104px] items-center justify-start p-4 text-right sm:min-h-[124px] sm:p-6 md:min-h-[144px]"}`}>
+      <div className={`relative flex h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "min-h-[104px] items-center justify-start p-4 text-right sm:min-h-[124px] sm:p-6 md:min-h-[144px]"}`}>
         <div className={isHero ? "max-w-[80%]" : "w-full max-w-3xl"}>
           <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-sm sm:text-lg md:text-2xl"} line-clamp-2 break-words font-bold leading-snug text-white drop-shadow`}>
             {ad.title || "إعلان"}
