@@ -9,7 +9,7 @@ import { storage } from "../firebase/config";
  * @param {File} file
  * @returns {Promise<string>}
  */
-export async function uploadImageToImgBB(file) {
+export async function uploadImageToFirebaseStorage(file) {
   if (!file || !file.type?.startsWith("image/")) {
     throw new Error("يرجى اختيار ملف صورة صالح.");
   }
