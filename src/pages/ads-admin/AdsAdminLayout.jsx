@@ -26,7 +26,7 @@ export default function AdsAdminLayout() {
   const { logout } = useAdminAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const active = location.pathname.replace(/^\/ads-admin\\/?/, "");
+  const active = location.pathname.slice("/ads-admin".length).replace(/^\/?/, "");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dark, setDark] = useState(() => document.documentElement.classList.contains("admin-dark"));
 
