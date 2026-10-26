@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { todayISO } from "../../utils/ids";
-import { uploadImageToImgBB } from "../../services/imageUploadService";
+import { uploadImageToFirebaseStorage } from "../../services/imageUploadService";
 
 export default function AdFormModal({ initial, onClose, onSave }) {
   const [form, setForm] = useState(initial || { 
@@ -16,7 +16,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
 
   const set = (k, v) => setForm((prev) => ({ ...prev, [k]: v }));
 
-  // ✅ دالة رفع الصورة إلى ImgBB
+  // ✅ دالة رفع الصورة إلى Firebase Storage
   async function handleImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -35,8 +35,8 @@ export default function AdFormModal({ initial, onClose, onSave }) {
 
     setUploading(true);
     try {
-      // رفع الصورة إلى ImgBB
-      const imageUrl = await uploadImageToImgBB(file);
+      // رفع الصورة إلى Firebase Storage
+      const imageUrl = await uploadImageToFirebaseStorage(file);
       setForm(prev => ({ ...prev, imageUrl }));
       setPreview(imageUrl);
     } catch (error) {
@@ -136,7 +136,7 @@ export default function AdFormModal({ initial, onClose, onSave }) {
                 <div className="w-full bg-gray-200 rounded-full h-2">
                   <div className="bg-teal-500 h-2 rounded-full animate-pulse w-full"></div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">جاري رفع الصورة إلى السحابة...</p>
+                <p className="text-xs text-gray-500 mt-1">جاري رفع الصورة إلى التخزين السحابي...</p>
               </div>
             )}
           </div>
