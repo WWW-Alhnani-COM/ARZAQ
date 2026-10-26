@@ -1,14 +1,40 @@
-// ARZAQ ImgBB proxy — run as a separate Render Web Service.
-// Keep IMGBB_API_KEY in Render environment variables; never commit the key.
+// ARZAQ image upload proxy — hosted on Render, stores public images in Vercel Blob.
 import http from "node:http";
+import { put } from "@vercel/blob";
 
 const PORT = Number(process.env.PORT || 10000);
-const API_KEY = process.env.IMGBB_API_KEY;
+const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
 const ALLOWED_ORIGINS = new Set([
   "https://arzaq-rj6i.onrender.com",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
 ]);
+const MAX_IMAGE_BYTES = 32 * 1024 * 1024;
+const MAX_REQUEST_BYTES = 45 * 1024 * 1024;
+const ALLOWED_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/avif",
+]);
+
+// Basic per-process protection against accidental/repeated upload abuse.
+const uploadCounts = new Map();
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = uploadCounts.get(ip);
+  if (!entry || now - entry.startedAt > 60 * 60 * 1000) {
+    uploadCounts.set(ip, { startedAt: now, count: 1 });
+    return false;
+  }
+  entry.count += 1;
+  return entry.count > 20;
+}
+
+function send(res, status, body) {
+  res.writeHead(status).end(JSON.stringify(body));
+}
 
 const server = http.createServer(async (req, res) => {
   const origin = req.headers.origin || "";
@@ -24,16 +50,30 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204).end();
     return;
   }
+
   if (req.method === "GET" && req.url === "/health") {
-    res.writeHead(200).end(JSON.stringify({ ok: true, configured: Boolean(API_KEY) }));
+    send(res, 200, { ok: true, configured: Boolean(BLOB_TOKEN), storage: "vercel-blob" });
     return;
   }
+
   if (req.method !== "POST" || req.url !== "/upload") {
-    res.writeHead(404).end(JSON.stringify({ error: "Not found" }));
+    send(res, 404, { error: "Not found" });
     return;
   }
-  if (!API_KEY) {
-    res.writeHead(503).end(JSON.stringify({ error: "ImgBB proxy is missing its server-side API key." }));
+
+  if (!ALLOWED_ORIGINS.has(origin)) {
+    send(res, 403, { error: "Origin not allowed." });
+    return;
+  }
+
+  if (!BLOB_TOKEN) {
+    send(res, 503, { error: "Render is missing BLOB_READ_WRITE_TOKEN for the arzaq-images Vercel Blob store." });
+    return;
+  }
+
+  const ip = (req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown").toString().split(",")[0].trim();
+  if (isRateLimited(ip)) {
+    send(res, 429, { error: "تم تجاوز عدد مرات رفع الصور المسموح بها مؤقتًا. حاول لاحقًا." });
     return;
   }
 
@@ -42,36 +82,54 @@ const server = http.createServer(async (req, res) => {
     let size = 0;
     for await (const chunk of req) {
       size += chunk.length;
-      if (size > 45 * 1024 * 1024) {
-        res.writeHead(413).end(JSON.stringify({ error: "Request too large." }));
+      if (size > MAX_REQUEST_BYTES) {
+        send(res, 413, { error: "Request too large." });
         return;
       }
       chunks.push(chunk);
     }
+
     const input = JSON.parse(Buffer.concat(chunks).toString("utf8"));
     if (typeof input.image !== "string" || !input.image) {
-      res.writeHead(400).end(JSON.stringify({ error: "Image data is required." }));
+      send(res, 400, { error: "Image data is required." });
       return;
     }
+
+    const mimeType = String(input.mimeType || "").toLowerCase();
+    if (!ALLOWED_TYPES.has(mimeType)) {
+      send(res, 400, { error: "صيغة الصورة غير مدعومة. استخدم JPG أو PNG أو WEBP أو GIF أو AVIF." });
+      return;
+    }
+
     const raw = input.image.replace(/^data:[^;]+;base64,/, "");
     const image = Buffer.from(raw, "base64");
-    if (!image.length || image.length > 32 * 1024 * 1024) {
-      res.writeHead(400).end(JSON.stringify({ error: "Image must be less than 32 MB." }));
+    if (!image.length || image.length > MAX_IMAGE_BYTES) {
+      send(res, 400, { error: "Image must be less than 32 MB." });
       return;
     }
-    const form = new FormData();
-    form.append("image", new Blob([image], { type: input.mimeType || "application/octet-stream" }), input.fileName || "image");
-    const upstream = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(API_KEY)}`, {
-      method: "POST",
-      body: form,
-      signal: AbortSignal.timeout(60000),
+
+    // Keep user-provided names safe and store all uploaded ad images in one folder.
+    const originalName = String(input.fileName || "image").split(/[\\/]/).pop();
+    const safeName = originalName.replace(/[^a-zA-Z0-9._-]/g, "-").slice(-100) || "image";
+    const pathname = `ads/${Date.now()}-${safeName}`;
+
+    const blob = await put(pathname, image, {
+      access: "public",
+      addRandomSuffix: true,
+      contentType: mimeType,
+      token: BLOB_TOKEN,
     });
-    const payload = await upstream.text();
-    res.writeHead(upstream.status).end(payload);
+
+    send(res, 200, {
+      success: true,
+      data: { url: blob.url, display_url: blob.url },
+    });
   } catch (error) {
-    console.error("ImgBB proxy error:", error);
-    if (!res.headersSent) res.writeHead(502).end(JSON.stringify({ error: "Could not reach ImgBB from the server." }));
+    console.error("ARZAQ Vercel Blob upload error:", error);
+    if (!res.headersSent) {
+      send(res, 502, { error: "تعذر رفع الصورة إلى Vercel Blob. تحقق من إعدادات المخزن والرمز السري في Render." });
+    }
   }
 });
 
-server.listen(PORT, "0.0.0.0", () => console.log(`ARZAQ ImgBB proxy listening on ${PORT}`));
+server.listen(PORT, "0.0.0.0", () => console.log(`ARZAQ Vercel Blob proxy listening on ${PORT}`));
