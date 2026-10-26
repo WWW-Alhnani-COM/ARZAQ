@@ -26,7 +26,7 @@ const inputCls = "w-full rounded-xl border border-[var(--line)] bg-white px-3 py
 export default function JobFormModal({ initial, onClose, onSave }) {
   const { categories, cities, organizations } = useData();
   const blank = {
-    jobTitle: "", organizationName: "", organizationLogo: "🏢",
+    jobTitle: "", organizationName: "", organizationLogo: "",
     category: categories[0]?.name || "", city: cities[0]?.name || "",
     workMode: WORK_MODES[0], jobType: JOB_TYPES[0], experienceLevel: EXP_LEVELS[0],
     salary: "", description: "", responsibilities: "", requirements: "", skills: "",
