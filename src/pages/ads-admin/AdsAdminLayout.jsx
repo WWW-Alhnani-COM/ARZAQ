@@ -44,7 +44,7 @@ export default function AdsAdminLayout() {
   const pageLabel = location.pathname === "/ads-admin" ? "نظرة عامة" : ITEMS.find((item) => item.id && location.pathname.startsWith("/ads-admin/" + item.id))?.label || "إدارة المنصة";
 
   return <div className="admin-shell flex min-h-screen" dir="rtl">
-    <AdminSidebar items={ITEMS} active={active} setActive={(id) => navigate(id ? `/ads-admin/${id}` : "/ads-admin")} title="لوحة مشرف الإعلانات" onLogout={handleLogout} Logo={Logo} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+    <AdminSidebar items={ITEMS} active={active} setActive={(id) => navigate(id ? `/ads-admin/${id}` : "/ads-admin")} title="لوحة تحكم المعلن" onLogout={handleLogout} Logo={Logo} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
     <main className="admin-main min-w-0 flex-1">
       <header className="admin-topbar">
         <div className="admin-topbar-title"><button type="button" onClick={() => setMobileOpen(true)} className="admin-menu-trigger md:hidden" aria-label="فتح القائمة الجانبية">☰</button><div><span>ARZAQ / الإعلانات</span><strong>{pageLabel}</strong></div></div>
