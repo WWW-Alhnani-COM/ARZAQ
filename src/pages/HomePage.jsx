@@ -7,7 +7,7 @@ import { InteractiveGridPattern } from "../components/ui/interactive-grid-patter
 
 const ROLES = ["مطوّر برمجيات", "محاسب أول", "أخصائي تسويق", "مهندس مدني", "معلم/ة"];
 
-function Hero() {
+function Hero({ heroAds = [] }) {
   const navigate = useNavigate();
   const { cities = [] } = useData();
   const [query, setQuery] = useState("");
@@ -41,7 +41,14 @@ function Hero() {
           squaresClassName="stroke-white/20"
         />
       </div>
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-16 pt-16 text-center sm:pb-20 md:px-8 md:pt-20 md:pb-24">
+      {heroAds.length > 0 && (
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-4 sm:pt-6 md:px-8" aria-label="إعلانات مميزة">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
+          </div>
+        </div>
+      )}
+      <div className={`relative z-10 mx-auto max-w-5xl px-4 pb-16 text-center sm:pb-20 md:px-8 md:pb-24 ${heroAds.length ? "pt-8 sm:pt-10 md:pt-12" : "pt-16 sm:pt-16 md:pt-20"}`}>
         <span className="mb-6 inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-xs font-semibold text-white/85">
           بلا تسجيل • التقديم مباشرة عبر واتساب
         </span>
@@ -182,15 +189,7 @@ export default function HomePage() {
 
   return (
     <div>
-      {heroAds.length > 0 && (
-        <section aria-label="إعلانات مميزة" className="w-full border-b border-[var(--line)] px-4 py-5 sm:py-6 md:py-8" style={{ background: "var(--sand)" }}>
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch gap-4 md:gap-5">
-            {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
-          </div>
-        </section>
-      )}
-
-      <Hero />
+      <Hero heroAds={heroAds} />
 
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
         <SectionHeading
