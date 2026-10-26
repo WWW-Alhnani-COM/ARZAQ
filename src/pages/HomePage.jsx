@@ -97,8 +97,8 @@ function AdBanner({ ad, size = "hero" }) {
       rel={href ? "noopener noreferrer" : undefined}
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
-        "group relative block w-full overflow-hidden rounded-xl bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
-        isHero ? "md:max-w-[970px]" : "max-w-[234px]",
+        "group relative block w-full overflow-hidden bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
+        isHero ? "rounded-none max-w-none" : "rounded-xl max-w-[234px]",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2" : "cursor-default",
       ].join(" ")}
       style={{ aspectRatio: isHero ? "970 / 250" : "234 / 60" }}
@@ -163,8 +163,8 @@ export default function HomePage() {
   return (
     <div>
       {heroAds.length > 0 && (
-        <section aria-label="إعلانات مميزة" className="border-b border-gray-100 bg-gray-50 px-3 py-3 sm:px-4 md:py-5">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3 md:gap-4">
+        <section aria-label="إعلانات مميزة" className="m-0 w-full border-b border-gray-100 bg-gray-50 p-0">
+          <div className="flex w-full flex-col items-stretch justify-center gap-0">
             {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
           </div>
         </section>
