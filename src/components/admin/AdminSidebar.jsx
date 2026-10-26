@@ -53,9 +53,9 @@ export default function AdminSidebar({ items, active, setActive, onLogout, title
       >
         <div className={"border-b " + (collapsed ? "p-1.5 flex flex-col items-center gap-2" : "p-4")} style={{ borderColor: "var(--line)" }}>
           <div className={"flex items-center gap-3 " + (collapsed ? "justify-center" : "justify-between")}>
-            <div className="min-w-0 overflow-hidden">
+            {!collapsed && <div className="min-w-0 overflow-hidden">
               <Logo />
-            </div>
+            </div>}
             <button
               type="button"
               onClick={() => setCollapsed((value) => !value)}
