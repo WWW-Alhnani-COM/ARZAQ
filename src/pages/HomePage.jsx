@@ -107,7 +107,7 @@ function AdBanner({ ad, size = "hero" }) {
       rel={href ? "noopener noreferrer" : undefined}
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
-        "group relative isolate block w-full aspect-[1959/723] overflow-hidden rounded-none border-0 bg-gradient-to-l from-teal-800 to-orange-500 shadow-none transition-colors duration-300",
+        "group relative isolate block w-full aspect-[1959/614] overflow-hidden rounded-none border-0 bg-gradient-to-l from-teal-800 to-orange-500 shadow-none transition-colors duration-300",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-4" : "cursor-default",
       ].join(" ")}
     >
@@ -115,7 +115,7 @@ function AdBanner({ ad, size = "hero" }) {
         <img
           src={ad.imageUrl}
           alt=""
-          className="absolute inset-0 -z-10 h-full w-full object-contain object-center"
+          className="absolute inset-0 -z-10 h-full w-full object-cover object-center"
           loading={isHero ? "eager" : "lazy"}
           onError={() => setImageFailed(true)}
         />
