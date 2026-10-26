@@ -29,7 +29,7 @@ function Hero({ heroAds = [] }) {
   }
 
   return (
-    <section className="brand-grad relative isolate overflow-hidden">
+    <section className="brand-grad relative isolate flex min-h-[calc(100svh-4rem)] flex-col justify-center overflow-hidden">
       <div aria-hidden="true" className="absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-20 md:h-96 md:w-96" style={{ background: "var(--orange)" }} />
       <div aria-hidden="true" className="absolute -bottom-32 -right-20 h-64 w-64 rounded-full border border-white/10 md:h-80 md:w-80" />
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -42,26 +42,24 @@ function Hero({ heroAds = [] }) {
         />
       </div>
       {heroAds.length > 0 && (
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-4 sm:pt-6 md:px-8" aria-label="إعلانات مميزة">
-          <div className="flex flex-col gap-3 sm:gap-4">
-            {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
-          </div>
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-3 sm:pt-4 md:px-8" aria-label="إعلان مميز">
+          <AdBanner ad={heroAds[0]} />
         </div>
       )}
-      <div className={`relative z-10 mx-auto max-w-5xl px-4 pb-16 text-center sm:pb-20 md:px-8 md:pb-24 ${heroAds.length ? "pt-8 sm:pt-10 md:pt-12" : "pt-16 sm:pt-16 md:pt-20"}`}>
-        <span className="mb-6 inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-xs font-semibold text-white/85">
+      <div className={`relative z-10 mx-auto w-full max-w-5xl px-4 pb-5 text-center sm:pb-7 md:px-8 ${heroAds.length ? "pt-4 sm:pt-5 md:pt-6" : "py-8 sm:py-10 md:py-12"}`}>
+        <span className="mb-3 inline-flex items-center rounded-full border border-white/25 px-3 py-1 text-[11px] font-semibold text-white/85 sm:mb-4 sm:py-1.5 sm:text-xs">
           بلا تسجيل • التقديم مباشرة عبر واتساب
         </span>
-        <h1 className="mb-4 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
+        <h1 className="mb-2 font-display text-2xl font-extrabold leading-tight text-white sm:mb-3 sm:text-3xl md:text-5xl">
           ابحث عن فرصتك القادمة
-          <span className="mt-2 block" style={{ color: "var(--orange)" }}>
+          <span className="mt-1 block sm:mt-2" style={{ color: "var(--orange)" }}>
             <span key={idx} className="word-rotate inline-block">{ROLES[idx]}</span> بانتظارك
           </span>
         </h1>
-        <p className="mx-auto mb-8 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+        <p className="mx-auto mb-4 max-w-xl text-xs leading-6 text-white/75 sm:mb-5 sm:text-sm sm:leading-7 md:mb-6 md:text-base">
           اكتشف أحدث الوظائف والفرص المهنية المناسبة لمهاراتك وخبراتك.
         </p>
-        <form onSubmit={search} role="search" className="mx-auto flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2.5 shadow-2xl md:flex-row">
+        <form onSubmit={search} role="search" className="mx-auto flex max-w-3xl flex-col gap-1.5 rounded-2xl bg-white p-2 shadow-2xl sm:gap-2 md:flex-row md:gap-2.5 md:p-2.5">
           <label className="sr-only" htmlFor="home-job-query">المسمى الوظيفي أو المهارة</label>
           <input
             id="home-job-query"
@@ -69,25 +67,25 @@ function Hero({ heroAds = [] }) {
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="المسمى الوظيفي أو المهارة"
-            className="min-w-0 flex-1 rounded-xl px-4 py-3 text-sm text-gray-800"
+            className="min-w-0 flex-1 rounded-xl px-3 py-2.5 text-sm text-gray-800 sm:py-3"
           />
           <label className="sr-only" htmlFor="home-job-city">المدينة</label>
           <select
             id="home-job-city"
             value={city}
             onChange={(event) => setCity(event.target.value)}
-            className="rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 md:max-w-48 md:border-0"
+            className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-700 sm:py-3 md:max-w-48 md:border-0"
           >
             <option value="">كل المدن</option>
             {cities.map((item) => (
               <option key={item.id || item.name} value={item.name}>{item.name}</option>
             ))}
           </select>
-          <button type="submit" className="btn-primary rounded-xl px-6 py-3 text-sm font-bold whitespace-nowrap">
+          <button type="submit" className="btn-primary rounded-xl px-6 py-2.5 text-sm font-bold whitespace-nowrap sm:py-3">
             بحث عن الوظائف
           </button>
         </form>
-        <p className="mt-4 text-xs text-white/60">ابحث بالمسمى أو المهارة، ويمكنك تحديد المدينة أيضًا.</p>
+        <p className="mt-2 text-[11px] text-white/60 sm:mt-3 sm:text-xs">ابحث بالمسمى أو المهارة، ويمكنك تحديد المدينة أيضًا.</p>
       </div>
     </section>
   );
@@ -115,7 +113,7 @@ function AdBanner({ ad, size = "hero" }) {
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
         "group relative isolate block w-full overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-l from-teal-800 to-orange-500 shadow-[0_12px_35px_rgba(18,46,51,0.12)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(18,46,51,0.2)]",
-        "aspect-[16/7] min-h-[160px] sm:aspect-[16/5] sm:min-h-[200px] md:aspect-[970/250] md:min-h-[230px]",
+        "h-[clamp(88px,17svh,170px)] sm:h-[clamp(110px,19svh,190px)] md:h-[clamp(120px,21svh,210px)]",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-4" : "cursor-default",
       ].join(" ")}
     >
@@ -134,17 +132,17 @@ function AdBanner({ ad, size = "hero" }) {
           ? "bg-gradient-to-l from-[#10282dcc] via-[#10282d80] to-[#10282d08]"
           : "bg-gradient-to-l from-[#10282dcc] via-[#10282d70] to-[#10282d18]"}`}
       />
-      <div className="flex h-full w-full items-center justify-start p-4 text-right sm:p-6 md:p-9">
-        <div className="w-full max-w-[88%] sm:max-w-[75%] md:max-w-[68%]">
-          <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/20 px-2.5 py-1 text-[10px] font-bold text-white/90 backdrop-blur-md sm:mb-3 sm:text-xs">
+      <div className="flex h-full w-full items-center justify-start p-3 text-right sm:p-5 md:p-7">
+        <div className="w-full max-w-[94%] sm:max-w-[80%] md:max-w-[72%]">
+          <span className="mb-1 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/20 px-2 py-0.5 text-[9px] font-bold text-white/90 backdrop-blur-md sm:mb-2 sm:px-2.5 sm:py-1 sm:text-xs">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--orange)]" aria-hidden="true" />
             إعلان مميز
           </span>
-          <p className="line-clamp-2 break-words text-base font-extrabold leading-snug text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] sm:text-2xl md:text-3xl">
+          <p className="break-words text-sm font-extrabold leading-snug text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] sm:text-xl md:text-2xl">
             {ad.title || "إعلان"}
           </p>
           {href && (
-            <span className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2 text-xs font-extrabold text-[#173f46] shadow-lg transition group-hover:bg-[var(--orange)] group-hover:text-white sm:mt-4 sm:px-5 sm:py-2.5 sm:text-sm">
+            <span className="mt-1.5 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white px-3 py-1.5 text-[10px] font-extrabold text-[#173f46] shadow-lg transition group-hover:bg-[var(--orange)] group-hover:text-white sm:mt-2 sm:rounded-xl sm:px-4 sm:py-2 sm:text-xs">
               اكتشف المزيد
               <span aria-hidden="true">←</span>
             </span>
