@@ -107,8 +107,7 @@ function AdBanner({ ad, size = "hero" }) {
       rel={href ? "noopener noreferrer" : undefined}
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
-        "group relative isolate block w-full overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-l from-teal-800 to-orange-500 shadow-[0_12px_35px_rgba(18,46,51,0.12)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(18,46,51,0.2)]",
-        "h-[clamp(88px,17svh,170px)] sm:h-[clamp(110px,19svh,190px)] md:h-[clamp(120px,21svh,210px)]",
+        "group relative isolate block w-full aspect-[1959/803] overflow-hidden rounded-none border-0 bg-gradient-to-l from-teal-800 to-orange-500 shadow-none transition-colors duration-300",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-4" : "cursor-default",
       ].join(" ")}
     >
@@ -185,14 +184,14 @@ export default function HomePage() {
       <Hero />
 
       {heroAds.length > 0 && (
-        <section aria-label="إعلان مميز" className="w-full" style={{ margin: 0, padding: 0, lineHeight: 0 }}>
-          <div className="mx-auto w-full max-w-7xl px-0" style={{ margin: 0, padding: 0 }}>
+        <section aria-label="إعلان مميز" className="m-0 w-full p-0" style={{ margin: 0, padding: 0, lineHeight: 0 }}>
+          <div className="m-0 w-full max-w-none p-0" style={{ margin: 0, padding: 0 }}>
             <AdBanner ad={heroAds[0]} />
           </div>
         </section>
       )}
 
-      <section className="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
+      <section className="mx-auto max-w-7xl px-4 pb-12 pt-0 md:px-8 md:pb-16">
         <SectionHeading
           eyebrow="فرص منتقاة"
           title="الوظائف المميزة"
