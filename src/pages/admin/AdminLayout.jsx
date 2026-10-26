@@ -25,8 +25,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="admin-shell flex" dir="rtl">
-      {/* Desktop sidebar (hidden on small screens) */}
+    <div className="admin-shell flex min-h-screen" dir="rtl">
       <AdminSidebar
         items={ITEMS}
         active={active}
@@ -38,23 +37,15 @@ export default function AdminLayout() {
         onClose={() => setMobileOpen(false)}
       />
 
-      <main className="flex-1">
-        {/* Mobile top bar */}
-        <div className="md:hidden flex items-center justify-between p-4 border-b" style={{ borderColor: "var(--line)" }}>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setMobileOpen(true)} className="p-2 rounded-lg hover:bg-gray-100">
-              ☰
-            </button>
-            <Logo />
+      <main className="min-w-0 flex-1">
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b bg-white/95 p-3 backdrop-blur md:hidden" style={{ borderColor: "var(--line)" }}>
+          <div className="flex min-w-0 items-center gap-3">
+            <button type="button" onClick={() => setMobileOpen(true)} className="rounded-lg p-2 transition hover:bg-gray-100" aria-label="فتح القائمة الجانبية" aria-expanded={mobileOpen}>☰</button>
+            <span className="truncate text-sm font-semibold text-gray-700">لوحة المشرف الرئيسي</span>
           </div>
-          <div>
-            <button onClick={handleLogout} className="text-red-500 font-semibold">
-              تسجيل الخروج
-            </button>
-          </div>
+          <button type="button" onClick={handleLogout} className="shrink-0 rounded-lg px-2 py-2 text-sm font-semibold text-red-500 hover:bg-red-50">خروج</button>
         </div>
-
-        <div className="p-6 md:p-8 max-w-6xl">
+        <div className="w-full min-w-0 p-4 sm:p-6 md:p-8">
           <Outlet />
         </div>
       </main>
