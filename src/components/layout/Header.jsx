@@ -27,7 +27,7 @@ export default function Header() {
           <Logo />
         </Link>
 
-        {/* ✅ روابط التنقل - تظهر فقط في الكمبيوتر */}
+        {/*  روابط التنقل - تظهر فقط في الكمبيوتر */}
         <nav className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((l) => (
             <NavLink 
@@ -42,7 +42,7 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* ✅ زر الهامبرجر - يظهر فقط في الهواتف (شاشات أقل من 1024px) */}
+        {/*  زر الهامبرجر - يظهر فقط في الهواتف (شاشات أقل من 1024px) */}
         <button 
           className="flex lg:hidden p-2 hover:bg-gray-100 rounded-lg transition" 
           onClick={() => setOpen(!open)} 
@@ -53,10 +53,10 @@ export default function Header() {
           </svg>
         </button>
 
-        {/* ❌ تم إزالة زر "تصفح الوظائف" نهائياً */}
+        {/*  تم إزالة زر "تصفح الوظائف" نهائياً */}
       </div>
 
-      {/* ✅ القائمة المنسدلة - تظهر فقط في الهواتف */}
+      {/*  القائمة المنسدلة - تظهر فقط في الهواتف */}
       {open && (
         <div className="lg:hidden border-t bg-white px-4 py-3 flex flex-col gap-1" style={{ borderColor: "var(--line)" }}>
           {NAV_LINKS.map((l) => (
