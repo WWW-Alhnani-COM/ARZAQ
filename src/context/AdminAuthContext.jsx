@@ -23,22 +23,22 @@ export function AdminAuthProvider({ children }) {
     try {
       // التحقق من إدخال البيانات
       if (!email || !password) {
-        setAuthError("❌ يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+        setAuthError(" يرجى إدخال البريد الإلكتروني وكلمة المرور.");
         setLoading(false);
         return false;
       }
       
       const result = await authService.signInAdmin(email, password);
       
-      console.log("📥 نتيجة تسجيل الدخول:", result);
+      console.log(" نتيجة تسجيل الدخول:", result);
       
       if (!result) {
-        setAuthError("❌ البريد الإلكتروني أو كلمة المرور غير صحيحة.");
+        setAuthError(" البريد الإلكتروني أو كلمة المرور غير صحيحة.");
         setLoading(false);
         return false;
       }
       
-      // ✅ التحقق من الدور المطلوب
+      //  التحقق من الدور المطلوب
       if (expectedRole === "ads") {
         // تحقق من أن الدور هو "ads"
         const roleLower = String(result.role).toLowerCase();
@@ -46,10 +46,10 @@ export function AdminAuthProvider({ children }) {
           setRole("ads");
           setAuthError("");
           setLoading(false);
-          console.log("✅ تم تسجيل الدخول كـ: ads");
+          console.log(" تم تسجيل الدخول كـ: ads");
           return true;
         } else {
-          setAuthError(`❌ هذا الحساب ليس مدير إعلانات. الدور الحالي: ${result.role}`);
+          setAuthError(` هذا الحساب ليس مدير إعلانات. الدور الحالي: ${result.role}`);
           setLoading(false);
           return false;
         }
@@ -61,10 +61,10 @@ export function AdminAuthProvider({ children }) {
           setRole("main");
           setAuthError("");
           setLoading(false);
-          console.log("✅ تم تسجيل الدخول كـ: main");
+          console.log(" تم تسجيل الدخول كـ: main");
           return true;
         } else {
-          setAuthError(`❌ هذا الحساب ليس مدير عام. الدور الحالي: ${result.role}`);
+          setAuthError(` هذا الحساب ليس مدير عام. الدور الحالي: ${result.role}`);
           setLoading(false);
           return false;
         }
@@ -75,34 +75,34 @@ export function AdminAuthProvider({ children }) {
         setRole(result.role);
         setAuthError("");
         setLoading(false);
-        console.log("✅ تم تسجيل الدخول كـ:", result.role);
+        console.log(" تم تسجيل الدخول كـ:", result.role);
         return true;
       }
       
-      setAuthError(`❌ هذا الحساب ليس لديه صلاحيات ${expectedRole === "ads" ? "مدير إعلانات" : "مدير عام"}`);
+      setAuthError(` هذا الحساب ليس لديه صلاحيات ${expectedRole === "ads" ? "مدير إعلانات" : "مدير عام"}`);
       setLoading(false);
       return false;
       
     } catch (e) {
-      console.error("❌ خطأ في تسجيل الدخول:", e);
+      console.error(" خطأ في تسجيل الدخول:", e);
       
       // رسائل خطأ محددة من Firebase
       if (e.code === "auth/user-not-found") {
-        setAuthError("❌ المستخدم غير موجود. يرجى التأكد من البريد الإلكتروني.");
+        setAuthError(" المستخدم غير موجود. يرجى التأكد من البريد الإلكتروني.");
       } else if (e.code === "auth/wrong-password") {
-        setAuthError("❌ كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.");
+        setAuthError(" كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.");
       } else if (e.code === "auth/invalid-email") {
-        setAuthError("❌ البريد الإلكتروني غير صحيح. يرجى إدخال بريد صحيح.");
+        setAuthError(" البريد الإلكتروني غير صحيح. يرجى إدخال بريد صحيح.");
       } else if (e.code === "auth/too-many-requests") {
-        setAuthError("❌ تم إرسال العديد من المحاولات. يرجى الانتظار قليلاً.");
+        setAuthError(" تم إرسال العديد من المحاولات. يرجى الانتظار قليلاً.");
       } else if (e.code === "auth/network-request-failed") {
-        setAuthError("❌ مشكلة في الاتصال بالإنترنت. يرجى التحقق من الاتصال.");
+        setAuthError(" مشكلة في الاتصال بالإنترنت. يرجى التحقق من الاتصال.");
       } else if (e.message === "ADMIN_PROFILE_NOT_FOUND") {
-        setAuthError("❌ لم يتم العثور على بيانات المشرف. يرجى التواصل مع الدعم الفني.");
+        setAuthError(" لم يتم العثور على بيانات المشرف. يرجى التواصل مع الدعم الفني.");
       } else if (e.message === "INVALID_ADMIN_ROLE") {
-        setAuthError("❌ دور المشرف غير صحيح. يجب أن يكون 'مدير عام' أو 'مدير إعلانات'.");
+        setAuthError(" دور المشرف غير صحيح. يجب أن يكون 'مدير عام' أو 'مدير إعلانات'.");
       } else {
-        setAuthError(`❌ ${e.message || "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."}`);
+        setAuthError(` ${e.message || "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."}`);
       }
       
       setLoading(false);
