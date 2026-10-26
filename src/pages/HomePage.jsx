@@ -219,7 +219,7 @@ export default function HomePage() {
           action={<button type="button" onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض كل الوظائف ←</button>}
         />
         {featured.length ? (
-          <div className="grid items-stretch gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+          <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-sm">
             {featured.map((job) => <JobCard key={job.id} job={job} />)}
           </div>
         ) : (
@@ -235,7 +235,7 @@ export default function HomePage() {
             action={<button type="button" onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض الكل ←</button>}
           />
           {latest.length ? (
-            <div className="grid items-stretch gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+            <div className="overflow-hidden rounded-2xl border border-[var(--line)] bg-white shadow-sm">
               {latest.map((job) => <JobCard key={job.id} job={job} />)}
             </div>
           ) : (
