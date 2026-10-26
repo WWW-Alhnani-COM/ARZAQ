@@ -88,6 +88,7 @@ function getActiveAds(ads, placements, page, position) {
 function AdBanner({ ad, size = "hero" }) {
   const [imageFailed, setImageFailed] = useState(false);
   const isHero = size === "hero";
+  const isFooter = size === "footer";
   const href = ad.targetUrl || ad.link;
 
   return (
@@ -98,10 +99,12 @@ function AdBanner({ ad, size = "hero" }) {
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
         "group relative block w-full overflow-hidden bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
-        isHero ? "rounded-none max-w-none" : "rounded-xl max-w-[234px]",
+        isHero
+          ? "rounded-none max-w-none"
+          : "mx-auto min-h-[104px] max-w-5xl rounded-xl sm:min-h-[124px] md:min-h-[144px]",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2" : "cursor-default",
       ].join(" ")}
-      style={{ aspectRatio: isHero ? "970 / 250" : "234 / 60" }}
+      style={isHero ? { aspectRatio: "970 / 250" } : undefined}
     >
       {ad.imageUrl && !imageFailed && (
         <img
@@ -112,14 +115,14 @@ function AdBanner({ ad, size = "hero" }) {
           onError={() => setImageFailed(true)}
         />
       )}
-      <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-black/35"}`} />
-      <div className={`relative flex h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "items-center justify-center px-3 text-center"}`}>
-        <div className={isHero ? "max-w-[80%]" : "w-full"}>
-          <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-xs"} line-clamp-2 font-bold leading-snug text-white drop-shadow`}>
+      <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-gradient-to-l from-black/70 via-black/35 to-black/10"}`} />
+      <div className={`relative flex min-h-inherit h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "min-h-[104px] items-center justify-start p-4 text-right sm:min-h-[124px] sm:p-6 md:min-h-[144px]"}`}>
+        <div className={isHero ? "max-w-[80%]" : "w-full max-w-3xl"}>
+          <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-sm sm:text-lg md:text-2xl"} line-clamp-2 break-words font-bold leading-snug text-white drop-shadow`}>
             {ad.title || "إعلان"}
           </p>
-          {isHero && href && (
-            <span className="mt-3 inline-flex rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm sm:text-sm">
+          {href && (
+            <span className="mt-2 inline-flex rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm sm:mt-3 sm:text-sm">
               اكتشف المزيد
             </span>
           )}
@@ -204,14 +207,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {footerAds.length > 0 && (
-        <section aria-label="إعلانات" className="border-t border-gray-200 bg-white px-3 py-4 sm:px-4">
-          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3">
-            {footerAds.map((ad) => <AdBanner key={ad.id} ad={ad} size="footer" />)}
-          </div>
-        </section>
-      )}
-
       <section className="mx-auto max-w-5xl px-4 py-12 text-center md:px-8 md:py-16">
         <h2 className="font-display text-2xl font-extrabold" style={{ color: "var(--teal-900)" }}>استكشف حسب التصنيف</h2>
         <p className="mt-2 text-sm text-gray-500">اختر المجال الذي يناسب خبرتك للوصول إلى الوظائف المرتبطة به.</p>
@@ -232,6 +227,14 @@ export default function HomePage() {
           <div className="mt-6"><EmptySection>ستظهر التصنيفات هنا عند توفرها.</EmptySection></div>
         )}
       </section>
+
+      {footerAds.length > 0 && (
+        <section aria-label="إعلانات" className="border-t border-gray-200 bg-white px-3 py-5 sm:px-4 sm:py-7">
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch justify-center gap-3">
+            {footerAds.map((ad) => <AdBanner key={ad.id} ad={ad} size="footer" />)}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
