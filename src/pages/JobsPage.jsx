@@ -25,7 +25,7 @@ function readFiltersFromUrl(searchParams) {
 }
 
 export default function JobsPage() {
-  const { jobs, categories, cities } = useData();
+  const { jobs = [], categories = [], cities = [], loading } = useData();
   const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => readFiltersFromUrl(searchParams));
 
