@@ -115,7 +115,7 @@ function AdBanner({ ad, size = "hero" }) {
         <img
           src={ad.imageUrl}
           alt=""
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+          className="absolute inset-0 -z-10 h-full w-full object-contain object-center"
           loading={isHero ? "eager" : "lazy"}
           onError={() => setImageFailed(true)}
         />
