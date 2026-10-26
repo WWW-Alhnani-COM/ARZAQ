@@ -5,11 +5,11 @@ export const EXP_LEVELS = ["حديث التخرج", "1-3 سنوات", "3-5 سن�
 export const JOB_STATUSES = ["published", "paused", "archived"];
 export const STATUS_LABEL = { published: "منشورة", paused: "متوقفة", archived: "مؤرشفة" };
 
-// ✅ تم التعديل: استخدام الإنجليزية للقيم مع الاحتفاظ بالأسماء العربية للعرض
+//  تم التعديل: استخدام الإنجليزية للقيم مع الاحتفاظ بالأسماء العربية للعرض
 export const AD_PAGES = ["home", "job", "jobs", "categories"];
 export const AD_POSITIONS = ["hero", "sidebar", "footer", "between"];
 
-// ✅ إضافة كائنات لعرض الأسماء العربية في الواجهة
+//  إضافة كائنات لعرض الأسماء العربية في الواجهة
 export const AD_PAGES_LABELS = {
   home: "الرئيسية",
   job: "صفحة الوظيفة",
