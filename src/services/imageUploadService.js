@@ -1,15 +1,14 @@
 // src/services/imageUploadService.js
-// Store advertisement images in the Firebase Storage bucket configured for ARZAQ.
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../firebase/config";
+
+// ImgBB API key used by the existing ARZAQ image uploader.
+const IMGBB_API_KEY = "d87626f06546fb03a2bfb61cdb55657a";
 
 /**
- * Upload an image to Firebase Storage and return its public download URL.
- * The signed-in admin must be allowed to write to the /ads path by Storage Rules.
+ * Upload an image to ImgBB and return its direct URL.
  * @param {File} file
  * @returns {Promise<string>}
  */
-export async function uploadImageToFirebaseStorage(file) {
+export async function uploadImageToImgBB(file) {
   if (!file || !file.type?.startsWith("image/")) {
     throw new Error("يرجى اختيار ملف صورة صالح.");
   }
@@ -18,36 +17,49 @@ export async function uploadImageToFirebaseStorage(file) {
     throw new Error("حجم الصورة كبير جداً. الحد الأقصى 32 ميجابايت.");
   }
 
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const path = `ads/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-  const imageRef = ref(storage, path);
+  const formData = new FormData();
+  formData.append("image", file);
 
+  let response;
   try {
-    const snapshot = await uploadBytes(imageRef, file, {
-      contentType: file.type,
-      cacheControl: "public,max-age=31536000",
-    });
-    return await getDownloadURL(snapshot.ref);
+    response = await fetch(
+      `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
   } catch (error) {
-    console.error("Firebase Storage upload failed:", error);
-
-    const messages = {
-      "storage/unauthorized": "لا توجد صلاحية لرفع الصور. تحقق من Firebase Storage Rules وحساب المشرف.",
-      "storage/unauthenticated": "انتهت جلسة تسجيل الدخول. سجّل الدخول مجدداً ثم حاول.",
-      "storage/bucket-not-found": "حاوية Firebase Storage غير موجودة أو لم يتم تفعيل Storage في مشروع Firebase.",
-      "storage/quota-exceeded": "تم تجاوز حصة التخزين المتاحة في Firebase.",
-      "storage/retry-limit-exceeded": "انتهت مهلة الاتصال أثناء رفع الصورة. تحقق من الإنترنت وحاول مجدداً.",
-      "storage/canceled": "تم إلغاء رفع الصورة.",
-    };
-    throw new Error(messages[error?.code] || `تعذر رفع الصورة إلى Firebase Storage (${error?.code || error?.message || "خطأ غير معروف"}).`);
+    console.error("ImgBB network request failed:", error);
+    throw new Error(
+      "تعذر الاتصال بخدمة ImgBB. تحقق من الإنترنت أو جرّب تعطيل مانع الإعلانات/الحماية مؤقتاً ثم أعد المحاولة."
+    );
   }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error(
+      `أعادت خدمة ImgBB استجابة غير مفهومة (HTTP ${response.status}). حاول لاحقاً.`
+    );
+  }
+
+  if (!response.ok || !data?.success || !data?.data?.url) {
+    const apiMessage = data?.error?.message;
+    throw new Error(
+      apiMessage || `فشل رفع الصورة إلى ImgBB (HTTP ${response.status}). تحقق من مفتاح API وحاول مجدداً.`
+    );
+  }
+
+  return data.data.url;
 }
 
 /**
- * Firebase Storage objects are managed in Firebase Console.
- * This function is kept for compatibility with existing imports.
+ * ImgBB does not provide image deletion through this upload API.
+ * This compatibility function does not delete the remote image.
  */
 export async function deleteImageFromImgBB(imageUrl) {
-  console.info("حذف الصورة من التخزين يحتاج إلى مسار الملف وصلاحيات الحذف في Firebase Storage.", imageUrl);
+  console.info("ImgBB لا يدعم حذف الصورة عبر واجهة الرفع الحالية.", imageUrl);
   return true;
 }
