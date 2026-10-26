@@ -1,56 +1,42 @@
 // src/services/imageUploadService.js
-// رفع صور الإعلانات إلى Firebase Storage بدل الاعتماد على ImgBB/DNS خارجي.
+// Upload through ARZAQ's server-side proxy so the browser does not need to resolve api.imgbb.com.
+const IMGBB_PROXY_URL = import.meta.env.VITE_IMGBB_PROXY_URL || "https://arzaq-imgbb-proxy.onrender.com/upload";
 
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../firebase/config";
+export async function uploadAdImageToImgBB(file) {
+  if (!file || !file.type?.startsWith("image/")) throw new Error("يرجى اختيار ملف صورة صالح.");
+  if (file.size > 32 * 1024 * 1024) throw new Error("حجم الصورة كبير جداً. الحد الأقصى 32 ميجابايت.");
 
-/**
- * Upload an ad image to Firebase Storage and return its download URL.
- * @param {File} file
- * @returns {Promise<string>}
- */
-export async function uploadAdImageToStorage(file) {
-  if (!file || !file.type?.startsWith("image/")) {
-    throw new Error("يرجى اختيار ملف صورة صالح.");
-  }
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("تعذرت قراءة ملف الصورة."));
+    reader.readAsDataURL(file);
+  });
 
-  if (file.size > 32 * 1024 * 1024) {
-    throw new Error("حجم الصورة كبير جداً. الحد الأقصى 32 ميجابايت.");
-  }
-
-  const safeName = file.name
-    .normalize("NFKD")
-    .replace(/[^a-zA-Z0-9._-]/g, "_")
-    .slice(-100) || "image";
-  const filePath = `advertisements/${Date.now()}-${crypto.randomUUID()}-${safeName}`;
-  const imageRef = ref(storage, filePath);
-
+  let response;
   try {
-    const snapshot = await uploadBytes(imageRef, file, {
-      contentType: file.type,
-      customMetadata: { originalName: file.name.slice(0, 200) },
+    response = await fetch(IMGBB_PROXY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: dataUrl, mimeType: file.type, fileName: file.name }),
     });
-    return await getDownloadURL(snapshot.ref);
   } catch (error) {
-    console.error("Firebase Storage upload failed:", error);
-    if (error?.code === "storage/unauthorized" || error?.code === "storage/unauthenticated") {
-      throw new Error("ليس لديك صلاحية رفع الصور. تحقق من قواعد Firebase Storage ومن تسجيل الدخول بحساب مشرف الإعلانات.");
-    }
-    if (error?.code === "storage/bucket-not-found" || error?.code === "storage/no-default-bucket") {
-      throw new Error("Firebase Storage غير مفعّل للمشروع. فعّله من Firebase Console ثم أعد المحاولة.");
-    }
-    if (error?.code === "storage/retry-limit-exceeded" || error?.code === "storage/canceled") {
-      throw new Error("تعذّر إكمال رفع الصورة بسبب الاتصال. تحقق من الشبكة ثم أعد المحاولة.");
-    }
-    throw new Error(error?.message || "فشل رفع الصورة إلى Firebase Storage.");
+    console.error("ARZAQ ImgBB proxy request failed:", error);
+    throw new Error("تعذر الاتصال بخادم رفع الصور. تحقق من نشر خدمة ImgBB Proxy.");
   }
+
+  let result;
+  try { result = await response.json(); }
+  catch { throw new Error(`استجابة غير مفهومة من خادم الرفع (HTTP ${response.status}).`); }
+
+  if (!response.ok || !result?.success || !result?.data?.url) {
+    throw new Error(result?.error?.message || result?.error || `فشل رفع الصورة (HTTP ${response.status}).`);
+  }
+  return result.data.url;
 }
 
-/**
- * Compatibility export: image removal in the current form only clears the form field.
- * Existing stored files are not deleted by this function.
- */
+// Existing form only clears the URL; remote ImgBB deletion is not implemented.
 export async function deleteImageFromImgBB(imageUrl) {
-  console.info("لم يتم حذف ملف Firebase Storage من التخزين:", imageUrl);
+  console.info("لم يتم حذف الصورة من ImgBB:", imageUrl);
   return true;
 }
