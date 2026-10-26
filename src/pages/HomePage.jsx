@@ -8,232 +8,229 @@ const ROLES = ["مطوّر برمجيات", "محاسب أول", "أخصائي �
 
 function Hero() {
   const navigate = useNavigate();
-  const { cities } = useData();
+  const { cities = [] } = useData();
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % ROLES.length), 2200);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setIdx((current) => (current + 1) % ROLES.length), 2600);
+    return () => clearInterval(timer);
   }, []);
 
-  function search() {
+  function search(event) {
+    event.preventDefault();
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
     if (city) params.set("city", city);
-    navigate(`/jobs?${params.toString()}`);
+    const suffix = params.toString();
+    navigate(suffix ? `/jobs?${suffix}` : "/jobs");
   }
 
   return (
-    <section className="brand-grad relative overflow-hidden">
-      <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full opacity-20" style={{ background: "var(--orange)" }}></div>
-      <div className="max-w-5xl mx-auto px-4 md:px-8 pt-20 pb-24 text-center relative">
-        <span className="inline-block text-xs font-semibold tracking-wide text-white/80 border border-white/25 rounded-full px-3 py-1 mb-6">
+    <section className="brand-grad relative isolate overflow-hidden">
+      <div aria-hidden="true" className="absolute -top-24 -left-24 h-72 w-72 rounded-full opacity-20 md:h-96 md:w-96" style={{ background: "var(--orange)" }} />
+      <div aria-hidden="true" className="absolute -bottom-32 -right-20 h-64 w-64 rounded-full border border-white/10 md:h-80 md:w-80" />
+      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-16 text-center sm:pb-20 md:px-8 md:pt-20 md:pb-24">
+        <span className="mb-6 inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-xs font-semibold text-white/85">
           بلا تسجيل • التقديم مباشرة عبر واتساب
         </span>
-        <h1 className="font-display text-3xl md:text-5xl font-extrabold text-white leading-tight mb-4">
-          ابحث عن فرصتك القادمة <br className="hidden md:block" />
-          <span className="word-rotate inline-block" style={{ color: "var(--orange)" }}>
-            <span key={idx}>{ROLES[idx]}</span>
-          </span>{" "}
-          بانتظارك
+        <h1 className="mb-4 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl md:text-5xl">
+          ابحث عن فرصتك القادمة
+          <span className="mt-2 block" style={{ color: "var(--orange)" }}>
+            <span key={idx} className="word-rotate inline-block">{ROLES[idx]}</span> بانتظارك
+          </span>
         </h1>
-        <p className="text-white/75 max-w-xl mx-auto mb-10">اكتشف أحدث الوظائف والفرص المهنية المناسبة لمهاراتك وخبراتك.</p>
-        <div className="bg-white rounded-2xl p-2.5 shadow-2xl flex flex-col md:flex-row gap-2 max-w-2xl mx-auto">
+        <p className="mx-auto mb-8 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+          اكتشف أحدث الوظائف والفرص المهنية المناسبة لمهاراتك وخبراتك.
+        </p>
+        <form onSubmit={search} role="search" className="mx-auto flex max-w-3xl flex-col gap-2 rounded-2xl bg-white p-2.5 shadow-2xl md:flex-row">
+          <label className="sr-only" htmlFor="home-job-query">المسمى الوظيفي أو المهارة</label>
           <input
+            id="home-job-query"
+            type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(event) => setQuery(event.target.value)}
             placeholder="المسمى الوظيفي أو المهارة"
-            className="flex-1 px-4 py-3 rounded-xl text-sm text-gray-800 focus:outline-none"
+            className="min-w-0 flex-1 rounded-xl px-4 py-3 text-sm text-gray-800"
           />
-          <select value={city} onChange={(e) => setCity(e.target.value)} className="px-4 py-3 rounded-xl text-sm text-gray-600 border md:border-0 border-gray-200">
+          <label className="sr-only" htmlFor="home-job-city">المدينة</label>
+          <select
+            id="home-job-city"
+            value={city}
+            onChange={(event) => setCity(event.target.value)}
+            className="rounded-xl border border-gray-200 px-4 py-3 text-sm text-gray-700 md:max-w-48 md:border-0"
+          >
             <option value="">كل المدن</option>
-            {cities && cities.map((c) => (
-              <option key={c.id} value={c.name}>{c.name}</option>
+            {cities.map((item) => (
+              <option key={item.id || item.name} value={item.name}>{item.name}</option>
             ))}
           </select>
-          <button onClick={search} className="btn-primary rounded-xl px-6 py-3 font-bold text-sm whitespace-nowrap">
+          <button type="submit" className="btn-primary rounded-xl px-6 py-3 text-sm font-bold whitespace-nowrap">
             بحث عن الوظائف
           </button>
-        </div>
+        </form>
+        <p className="mt-4 text-xs text-white/60">ابحث بالمسمى أو المهارة، ويمكنك تحديد المدينة أيضًا.</p>
       </div>
     </section>
   );
 }
 
-// ✅ دالة مساعدة لجلب الإعلانات النشطة
 function getActiveAds(ads, placements, page, position) {
-  if (!ads || !placements) return [];
-  
+  if (!Array.isArray(ads) || !Array.isArray(placements)) return [];
   return placements
-    .filter((p) => p.page === page && p.position === position)
+    .filter((placement) => placement.page === page && placement.position === position)
     .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-    .map((p) => ads.find((a) => a.id === p.adId && a.active === true))
+    .map((placement) => ads.find((ad) => ad.id === placement.adId && ad.active === true))
     .filter(Boolean);
 }
 
+function AdBanner({ ad, size = "hero" }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const isHero = size === "hero";
+  const href = ad.targetUrl || ad.link;
+
+  return (
+    <a
+      href={href || undefined}
+      target={href ? "_blank" : undefined}
+      rel={href ? "noopener noreferrer" : undefined}
+      aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
+      className={[
+        "group relative block w-full overflow-hidden rounded-xl bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
+        isHero ? "md:max-w-[970px]" : "max-w-[234px]",
+        href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2" : "cursor-default",
+      ].join(" ")}
+      style={{ aspectRatio: isHero ? "970 / 250" : "234 / 60" }}
+    >
+      {ad.imageUrl && !imageFailed && (
+        <img
+          src={ad.imageUrl}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+        />
+      )}
+      <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-black/35"}`} />
+      <div className={`relative flex h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "items-center justify-center px-3 text-center"}`}>
+        <div className={isHero ? "max-w-[80%]" : "w-full"}>
+          <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-xs"} line-clamp-2 font-bold leading-snug text-white drop-shadow`}>
+            {ad.title || "إعلان"}
+          </p>
+          {isHero && href && (
+            <span className="mt-3 inline-flex rounded-full bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm sm:text-sm">
+              اكتشف المزيد
+            </span>
+          )}
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function EmptySection({ children }) {
+  return (
+    <div className="card rounded-2xl border-dashed px-5 py-8 text-center text-sm leading-6 text-gray-500">
+      {children}
+    </div>
+  );
+}
+
 export default function HomePage() {
-  const { jobs, categories, ads, placements, loading } = useData();
+  const { jobs = [], categories = [], ads = [], placements = [], loading } = useData();
   const navigate = useNavigate();
-  
-  // ✅ استخدام الأسماء الإنجليزية (المطابقة لـ Firebase)
+
   const heroAds = getActiveAds(ads, placements, "home", "hero");
   const footerAds = getActiveAds(ads, placements, "home", "footer");
-  
-  const published = jobs ? jobs.filter((j) => j.status === "published") : [];
-  const featured = published.filter((j) => j.featured);
+  const published = jobs.filter((job) => job.status === "published");
+  const featured = published.filter((job) => job.featured).slice(0, 6);
   const latest = [...published]
-    .sort((a, b) => new Date(b.publishDate) - new Date(a.publishDate))
+    .sort((a, b) => new Date(b.publishDate || 0) - new Date(a.publishDate || 0))
     .slice(0, 6);
 
   if (loading) {
-    return <div className="text-center py-20 text-gray-500">جاري التحميل...</div>;
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-24 text-center" role="status" aria-live="polite">
+        <span className="inline-flex items-center gap-3 text-sm text-gray-500">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-gray-200 border-t-teal-700" aria-hidden="true" />
+          جاري تحميل الوظائف...
+        </span>
+      </div>
+    );
   }
 
   return (
     <div>
-      {/* ✅ عرض إعلانات الهيرو - بنر 970×250 */}
       {heroAds.length > 0 && (
-        <div className="relative w-full bg-gray-100 py-2 md:py-3">
-          <div className="max-w-7xl mx-auto px-2 sm:px-4">
-            {/* بنر أفقي 970×250 */}
-            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-              {heroAds.map((ad) => (
-                <a
-                  key={ad.id}
-                  href={ad.targetUrl || ad.link || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative group block w-full md:w-[970px] overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.01]"
-                  style={{ aspectRatio: '970/250' }}
-                >
-                  {ad.imageUrl ? (
-                    <>
-                      <img 
-                        src={ad.imageUrl} 
-                        alt={ad.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                      {/* طبقة شفافة مع نص البنر */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent">
-                        <div className="flex flex-col items-start justify-center h-full px-4 sm:px-6 md:px-8 lg:px-12">
-                          <h3 className="text-white font-bold text-base sm:text-lg md:text-2xl lg:text-3xl drop-shadow-lg line-clamp-2 max-w-[70%]">
-                            {ad.title}
-                          </h3>
-                          <span className="mt-2 inline-flex items-center gap-2 text-white/90 text-xs sm:text-sm font-medium bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-1 sm:py-1.5 rounded-full hover:bg-white/30 transition">
-                            اضغط للمزيد
-                            <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    // إذا لم توجد صورة
-                    <div className="w-full h-full bg-gradient-to-r from-teal-600 to-orange-600 flex items-center justify-center p-4">
-                      <div className="text-center">
-                        <span className="text-white font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl">
-                          {ad.title}
-                        </span>
-                        <span className="block text-white/80 text-sm sm:text-base mt-2">
-                          اضغط للمزيد ←
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
+        <section aria-label="إعلانات مميزة" className="border-b border-gray-100 bg-gray-50 px-3 py-3 sm:px-4 md:py-5">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3 md:gap-4">
+            {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
           </div>
-        </div>
+        </section>
       )}
 
       <Hero />
 
-      <section className="max-w-7xl mx-auto px-4 md:px-8 py-16">
+      <section className="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
         <SectionHeading
           eyebrow="فرص منتقاة"
           title="الوظائف المميزة"
-          action={<button onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض الكل ←</button>}
+          action={<button type="button" onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض كل الوظائف ←</button>}
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {featured.map((j) => <JobCard key={j.id} job={j} />)}
-        </div>
+        {featured.length ? (
+          <div className="grid items-stretch gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+            {featured.map((job) => <JobCard key={job.id} job={job} />)}
+          </div>
+        ) : (
+          <EmptySection>لا توجد وظائف مميزة حاليًا. استعرض جميع الوظائف للاطلاع على الفرص المتاحة.</EmptySection>
+        )}
       </section>
 
-      <section className="py-16" style={{ background: "var(--teal-100)" }}>
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
+      <section className="py-12 md:py-16" style={{ background: "var(--teal-100)" }}>
+        <div className="mx-auto max-w-7xl px-4 md:px-8">
           <SectionHeading
-            eyebrow="جديدة كل يوم"
+            eyebrow="أُضيفت حديثًا"
             title="أحدث الوظائف"
-            action={<button onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض الكل ←</button>}
+            action={<button type="button" onClick={() => navigate("/jobs")} className="text-sm font-semibold" style={{ color: "var(--teal)" }}>عرض الكل ←</button>}
           />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {latest.map((j) => <JobCard key={j.id} job={j} />)}
-          </div>
+          {latest.length ? (
+            <div className="grid items-stretch gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3">
+              {latest.map((job) => <JobCard key={job.id} job={job} />)}
+            </div>
+          ) : (
+            <EmptySection>لا توجد وظائف منشورة حاليًا. يرجى العودة لاحقًا للاطلاع على الفرص الجديدة.</EmptySection>
+          )}
         </div>
       </section>
 
-      {/* ✅ عرض إعلانات الفوتر - بنر صغير */}
       {footerAds.length > 0 && (
-        <div className="relative w-full bg-gray-50 py-2 sm:py-3 border-t border-gray-200">
-          <div className="max-w-7xl mx-auto px-2 sm:px-4">
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              {footerAds.map((ad) => (
-                <a
-                  key={ad.id}
-                  href={ad.targetUrl || ad.link || "#"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative group block overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
-                  style={{ width: '234px', height: '60px' }}
-                >
-                  {ad.imageUrl ? (
-                    <>
-                      <img 
-                        src={ad.imageUrl} 
-                        alt={ad.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent">
-                        <div className="flex items-center h-full px-3">
-                          <p className="text-white font-bold text-xs sm:text-sm line-clamp-1 drop-shadow-lg">
-                            {ad.title}
-                          </p>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-r from-teal-500 to-orange-500 flex items-center justify-center px-3">
-                      <span className="text-white font-bold text-xs sm:text-sm text-center line-clamp-1">
-                        {ad.title}
-                      </span>
-                    </div>
-                  )}
-                </a>
-              ))}
-            </div>
+        <section aria-label="إعلانات" className="border-t border-gray-200 bg-white px-3 py-4 sm:px-4">
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-3">
+            {footerAds.map((ad) => <AdBanner key={ad.id} ad={ad} size="footer" />)}
           </div>
-        </div>
+        </section>
       )}
 
-      <section className="max-w-5xl mx-auto px-4 md:px-8 py-16 text-center">
-        <h2 className="font-display text-2xl font-extrabold mb-3" style={{ color: "var(--teal-900)" }}>استكشف حسب التصنيف</h2>
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          {categories && categories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => navigate(`/jobs?category=${encodeURIComponent(c.name)}`)}
-              className="card rounded-full px-4 py-2 text-sm font-medium hover:shadow-md transition"
-            >
-              {c.name}
-            </button>
-          ))}
-        </div>
+      <section className="mx-auto max-w-5xl px-4 py-12 text-center md:px-8 md:py-16">
+        <h2 className="font-display text-2xl font-extrabold" style={{ color: "var(--teal-900)" }}>استكشف حسب التصنيف</h2>
+        <p className="mt-2 text-sm text-gray-500">اختر المجال الذي يناسب خبرتك للوصول إلى الوظائف المرتبطة به.</p>
+        {categories.length ? (
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {categories.map((category) => (
+              <button
+                key={category.id || category.name}
+                type="button"
+                onClick={() => navigate(`/jobs?category=${encodeURIComponent(category.name)}`)}
+                className="card rounded-full px-4 py-2 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2"
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6"><EmptySection>ستظهر التصنيفات هنا عند توفرها.</EmptySection></div>
+        )}
       </section>
     </div>
   );
