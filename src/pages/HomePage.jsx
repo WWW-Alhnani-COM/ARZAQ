@@ -107,36 +107,44 @@ function AdBanner({ ad, size = "hero" }) {
       rel={href ? "noopener noreferrer" : undefined}
       aria-label={href ? `عرض الإعلان: ${ad.title}` : undefined}
       className={[
-        "group relative block w-full overflow-hidden bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
-        isHero
-          ? "rounded-none max-w-none"
-          : "min-h-0 max-w-none rounded-none",
-        href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2" : "cursor-default",
+        "group relative isolate block w-full overflow-hidden rounded-2xl border border-white/20 bg-gradient-to-l from-teal-800 to-orange-500 shadow-[0_12px_35px_rgba(18,46,51,0.12)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(18,46,51,0.2)]",
+        "aspect-[16/7] min-h-[160px] sm:aspect-[16/5] sm:min-h-[200px] md:aspect-[970/250] md:min-h-[230px]",
+        href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-4" : "cursor-default",
       ].join(" ")}
-      style={{ aspectRatio: "970 / 250" }}
     >
       {ad.imageUrl && !imageFailed && (
         <img
           src={ad.imageUrl}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-          loading="lazy"
+          className="absolute inset-0 -z-10 h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+          loading={isHero ? "eager" : "lazy"}
           onError={() => setImageFailed(true)}
         />
       )}
-      <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-gradient-to-l from-black/70 via-black/35 to-black/10"}`} />
-      <div className={`relative flex h-full w-full items-center justify-start text-right ${isHero ? "p-4 sm:p-6 md:p-10" : "p-4 sm:p-6 md:p-10"}`}>
-        <div className={isHero ? "max-w-[80%]" : "w-full max-w-3xl"}>
-          <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-sm sm:text-lg md:text-2xl"} line-clamp-2 break-words font-bold leading-snug text-white drop-shadow`}>
+      <div
+        aria-hidden="true"
+        className={`absolute inset-0 -z-10 ${isHero
+          ? "bg-gradient-to-l from-[#10282dcc] via-[#10282d80] to-[#10282d08]"
+          : "bg-gradient-to-l from-[#10282dcc] via-[#10282d70] to-[#10282d18]"}`}
+      />
+      <div className="flex h-full w-full items-center justify-start p-4 text-right sm:p-6 md:p-9">
+        <div className="w-full max-w-[88%] sm:max-w-[75%] md:max-w-[68%]">
+          <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-black/20 px-2.5 py-1 text-[10px] font-bold text-white/90 backdrop-blur-md sm:mb-3 sm:text-xs">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--orange)]" aria-hidden="true" />
+            إعلان مميز
+          </span>
+          <p className="line-clamp-2 break-words text-base font-extrabold leading-snug text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.35)] sm:text-2xl md:text-3xl">
             {ad.title || "إعلان"}
           </p>
           {href && (
-            <span className="mt-2 inline-flex rounded-full bg-white/20 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm sm:mt-3 sm:text-sm">
+            <span className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white px-4 py-2 text-xs font-extrabold text-[#173f46] shadow-lg transition group-hover:bg-[var(--orange)] group-hover:text-white sm:mt-4 sm:px-5 sm:py-2.5 sm:text-sm">
               اكتشف المزيد
+              <span aria-hidden="true">←</span>
             </span>
           )}
         </div>
       </div>
+      <span aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-1 w-1/3 bg-[var(--orange)] transition-all duration-500 group-hover:w-full" />
     </a>
   );
 }
@@ -175,8 +183,8 @@ export default function HomePage() {
   return (
     <div>
       {heroAds.length > 0 && (
-        <section aria-label="إعلانات مميزة" className="m-0 w-full border-b border-gray-100 bg-gray-50 p-0">
-          <div className="flex w-full flex-col items-stretch justify-center gap-0">
+        <section aria-label="إعلانات مميزة" className="w-full border-b border-[var(--line)] px-4 py-5 sm:py-6 md:py-8" style={{ background: "var(--sand)" }}>
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch gap-4 md:gap-5">
             {heroAds.map((ad) => <AdBanner key={ad.id} ad={ad} />)}
           </div>
         </section>
@@ -238,8 +246,8 @@ export default function HomePage() {
       </section>
 
       {footerAds.length > 0 && (
-        <section aria-label="إعلانات" className="m-0 w-full border-0 bg-white p-0">
-          <div className="flex w-full flex-col items-stretch justify-center gap-0">
+        <section aria-label="إعلانات" className="w-full border-t border-[var(--line)] px-4 py-6 md:py-8" style={{ background: "var(--sand)" }}>
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch gap-4 md:gap-5">
             {footerAds.map((ad) => <AdBanner key={ad.id} ad={ad} size="footer" />)}
           </div>
         </section>
