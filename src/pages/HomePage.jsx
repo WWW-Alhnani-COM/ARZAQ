@@ -41,11 +41,6 @@ function Hero({ heroAds = [] }) {
           squaresClassName="stroke-white/20"
         />
       </div>
-      {heroAds.length > 0 && (
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 pt-3 sm:pt-4 md:px-8" aria-label="إعلان مميز">
-          <AdBanner ad={heroAds[0]} />
-        </div>
-      )}
       <div className={`relative z-10 mx-auto w-full max-w-5xl px-4 pb-5 text-center sm:pb-7 md:px-8 ${heroAds.length ? "pt-4 sm:pt-5 md:pt-6" : "py-8 sm:py-10 md:py-12"}`}>
         <span className="mb-3 inline-flex items-center rounded-full border border-white/25 px-3 py-1 text-[11px] font-semibold text-white/85 sm:mb-4 sm:py-1.5 sm:text-xs">
           بلا تسجيل • التقديم مباشرة عبر واتساب
@@ -187,7 +182,15 @@ export default function HomePage() {
 
   return (
     <div>
-      <Hero heroAds={heroAds} />
+      <Hero />
+
+      {heroAds.length > 0 && (
+        <section aria-label="إعلان مميز" className="w-full" style={{ margin: 0, padding: 0, lineHeight: 0 }}>
+          <div className="mx-auto w-full max-w-7xl px-0" style={{ margin: 0, padding: 0 }}>
+            <AdBanner ad={heroAds[0]} />
+          </div>
+        </section>
+      )}
 
       <section className="mx-auto max-w-7xl px-4 py-12 md:px-8 md:py-16">
         <SectionHeading
