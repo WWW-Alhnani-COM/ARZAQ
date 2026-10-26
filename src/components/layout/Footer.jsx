@@ -3,38 +3,26 @@ import Logo from "./Logo";
 
 export default function Footer() {
   return (
-    <footer className="brand-grad text-white mt-24">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-14 grid md:grid-cols-4 gap-10">
-        <div>
+    <footer className="brand-grad mt-24 text-white">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-5 sm:flex-row md:px-8">
+        <aside className="flex flex-col items-center gap-2 text-center sm:flex-row sm:text-right">
           <Logo light />
-          <p className="text-sm text-white/70 mt-4 leading-relaxed">
-            منصة وظائف عامة تربط الباحثين عن عمل بالفرص المناسبة، بلا تسجيل وبلا تعقيد — التقديم مباشرة عبر واتساب.
+          <p className="text-xs leading-relaxed text-white/70">
+            © {new Date().getFullYear()} أرزاق ARZAQ. جميع الحقوق محفوظة.
           </p>
-        </div>
-        <div>
-          <div className="font-display font-bold mb-3">روابط سريعة</div>
-          <div className="flex flex-col gap-2 text-sm text-white/75">
-            <Link className="hover:text-white" to="/jobs">كل الوظائف</Link>
-            <Link className="hover:text-white" to="/categories">التصنيفات</Link>
-            <Link className="hover:text-white" to="/cities">المدن</Link>
-            <Link className="hover:text-white" to="/remote-jobs">وظائف عن بُعد</Link>
-          </div>
-        </div>
-        <div>
-          <div className="font-display font-bold mb-3">المنصة</div>
-          <div className="flex flex-col gap-2 text-sm text-white/75">
-            <Link className="hover:text-white" to="/about">من نحن</Link>
-            <Link className="hover:text-white" to="/contact">تواصل معنا</Link>
-            <Link className="hover:text-white" to="/admin/login">لوحة الإدارة</Link>
-          </div>
-        </div>
-        <div>
-          <div className="font-display font-bold mb-3">التقديم عبر واتساب</div>
-          <p className="text-sm text-white/75">كل التقديمات تتم مباشرة عبر واتساب دون إنشاء أي حساب على المنصة.</p>
-          <div className="mt-3 inline-flex items-center gap-2 text-sm bg-white/10 rounded-lg px-3 py-2">📞 774218060</div>
-        </div>
+        </aside>
+
+        <nav aria-label="روابط التذييل" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-white/75 sm:justify-end sm:text-sm">
+          <Link className="transition hover:text-white" to="/jobs">كل الوظائف</Link>
+          <Link className="transition hover:text-white" to="/categories">التصنيفات</Link>
+          <Link className="transition hover:text-white" to="/cities">المدن</Link>
+          <Link className="transition hover:text-white" to="/about">من نحن</Link>
+          <Link className="transition hover:text-white" to="/contact">تواصل معنا</Link>
+        </nav>
       </div>
-      <div className="border-t border-white/10 text-center text-xs text-white/50 py-5">© 2026 أرزاق ARZAQ. جميع الحقوق محفوظة.</div>
+      <div className="border-t border-white/10 px-4 py-2 text-center text-[11px] text-white/55">
+        فرصتك القادمة تبدأ من هنا — التقديم مباشرة عبر واتساب
+      </div>
     </footer>
   );
 }
