@@ -1,30 +1,49 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useData } from "../context/DataContext";
 import JobCard from "../components/jobs/JobCard";
 import JobFilters from "../components/jobs/JobFilters";
 
-// تُقرأ فلاتر البحث من رابط URL (query params) — بحيث تكون صفحة /jobs
-// قابلة للمشاركة والفهرسة مباشرة بنتائج بحث محددة (مفيد لـ SEO أيضًا).
-export default function JobsPage() {
-  const { jobs, categories, cities } = useData();
-  const [searchParams] = useSearchParams();
+const EMPTY_FILTERS = {
+  query: "",
+  category: "",
+  city: "",
+  workMode: "",
+  jobType: "",
+  expLevel: "",
+};
 
-  const [filters, setFilters] = useState({
+// تُقرأ فلاتر البحث من الرابط عند فتح الصفحة أو عند التنقل إلى رابط بحث آخر.
+// تغيير الفلاتر داخل الواجهة لا يغيّر عنوان الصفحة.
+function readFiltersFromUrl(searchParams) {
+  return {
+    ...EMPTY_FILTERS,
     query: searchParams.get("q") || "",
     category: searchParams.get("category") || "",
     city: searchParams.get("city") || "",
-    workMode: "",
-    jobType: "",
-    expLevel: "",
-  });
+  };
+}
+
+export default function JobsPage() {
+  const { jobs, categories, cities } = useData();
+  const [searchParams] = useSearchParams();
+  const [filters, setFilters] = useState(() => readFiltersFromUrl(searchParams));
+
+  // حافظ على توافق الفلاتر مع روابط البحث عند التنقل داخل التطبيق،
+  // من دون كتابة تغييرات الفلاتر اليومية إلى الرابط.
+  useEffect(() => {
+    setFilters(readFiltersFromUrl(searchParams));
+  }, [searchParams]);
 
   const results = useMemo(() => {
     return jobs.filter((j) => {
       if (j.status !== "published") return false;
       const q = filters.query.trim().toLowerCase();
-      const haystack = [j.jobTitle, j.organizationName, j.description, ...(j.skills || [])].join(" ").toLowerCase();
+      const haystack = [j.jobTitle, j.organizationName, j.description, ...(j.skills || [])]
+        .join(" ")
+        .toLowerCase();
       const matchesQuery = !q || haystack.includes(q);
+
       return (
         matchesQuery &&
         (!filters.category || j.category === filters.category) &&
@@ -36,27 +55,59 @@ export default function JobsPage() {
     });
   }, [jobs, filters]);
 
-  const hasActiveFilters = Object.values(filters).some(Boolean);
-  const resetFilters = () => setFilters({ query: "", category: "", city: "", workMode: "", jobType: "", expLevel: "" });
+  const hasActiveFilters = Object.values(filters).some((value) => Boolean(value));
+  const resetFilters = () => setFilters({ ...EMPTY_FILTERS });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
-      <div className="mb-8">
-        <h1 className="font-display text-2xl font-extrabold mb-1" style={{ color: "var(--teal-900)" }}>كل الوظائف</h1>
-        <p className="text-sm text-gray-500">{results.length} وظيفة متاحة حاليًا</p>
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
+      <div className="mb-6 md:mb-8">
+        <h1
+          className="font-display text-2xl font-extrabold mb-1"
+          style={{ color: "var(--teal-900)" }}
+        >
+          كل الوظائف
+        </h1>
+        <p className="text-sm text-gray-500" aria-live="polite">
+          {results.length} وظيفة متاحة حاليًا
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-8">
-        <JobFilters filters={filters} setFilters={setFilters} categories={categories} cities={cities} onReset={resetFilters} hasActiveFilters={hasActiveFilters} />
-        <div className="lg:col-span-3">
+      <div className="grid lg:grid-cols-4 gap-5 lg:gap-8">
+        <JobFilters
+          filters={filters}
+          setFilters={setFilters}
+          categories={categories}
+          cities={cities}
+          onReset={resetFilters}
+          hasActiveFilters={hasActiveFilters}
+        />
+
+        <section className="lg:col-span-3" aria-label="نتائج الوظائف">
           {results.length === 0 ? (
-            <div className="card rounded-2xl p-14 text-center text-gray-400">لا توجد وظائف مطابقة لبحثك حاليًا. جرّب تعديل الفلاتر.</div>
+            <div className="card rounded-2xl p-8 md:p-14 text-center">
+              <p className="font-bold mb-2" style={{ color: "var(--teal-900)" }}>
+                لا توجد وظائف مطابقة
+              </p>
+              <p className="text-sm text-gray-500 mb-4">
+                جرّب تغيير كلمات البحث أو تعديل الفلاتر لعرض نتائج أخرى.
+              </p>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-semibold underline underline-offset-4"
+                  style={{ color: "var(--orange-600)" }}
+                >
+                  مسح جميع الفلاتر
+                </button>
+              )}
+            </div>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-5">
-              {results.map((j) => <JobCard key={j.id} job={j} />)}
+            <div className="grid sm:grid-cols-2 gap-4 md:gap-5">
+              {results.map((job) => <JobCard key={job.id} job={job} />)}
             </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   );
