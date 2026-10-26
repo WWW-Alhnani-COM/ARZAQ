@@ -16,7 +16,7 @@ export default function AdminDashboardPage() {
   const recentJobs = matchingJobs.slice(0, 8);
   const exportJobs = () => {
     const rows = [["المسمى الوظيفي", "الجهة", "المدينة", "الحالة", "مميزة"], ...matchingJobs.map((job) => [job.jobTitle || "", job.organizationName || "", job.city || "", job.status || "", job.featured ? "نعم" : "لا"])];
-    const csv = "\\uFEFF" + rows.map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(",")).join("\\n");
+    const csv = "\uFEFF" + rows.map((row) => row.map((value) => \`"\${String(value).replaceAll('"', '""')}"\`).join(",")).join("\n");
     const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
     const link = document.createElement("a"); link.href = url; link.download = "arzaq-jobs.csv"; link.click(); URL.revokeObjectURL(url);
   };
