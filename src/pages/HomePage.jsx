@@ -100,10 +100,10 @@ function AdBanner({ ad, size = "hero" }) {
         "group relative block w-full overflow-hidden bg-gradient-to-l from-teal-700 to-orange-500 shadow-sm transition hover:shadow-lg",
         isHero
           ? "rounded-none max-w-none"
-          : "mx-auto min-h-[104px] max-w-5xl rounded-xl sm:min-h-[124px] md:min-h-[144px]",
+          : "min-h-0 max-w-none rounded-none",
         href ? "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-700 focus-visible:ring-offset-2" : "cursor-default",
       ].join(" ")}
-      style={isHero ? { aspectRatio: "970 / 250" } : undefined}
+      style={{ aspectRatio: "970 / 250" }}
     >
       {ad.imageUrl && !imageFailed && (
         <img
@@ -115,7 +115,7 @@ function AdBanner({ ad, size = "hero" }) {
         />
       )}
       <div className={`absolute inset-0 ${isHero ? "bg-gradient-to-r from-black/75 via-black/35 to-transparent" : "bg-gradient-to-l from-black/70 via-black/35 to-black/10"}`} />
-      <div className={`relative flex h-full w-full ${isHero ? "items-center justify-start p-4 text-right sm:p-6 md:p-10" : "min-h-[104px] items-center justify-start p-4 text-right sm:min-h-[124px] sm:p-6 md:min-h-[144px]"}`}>
+      <div className={`relative flex h-full w-full items-center justify-start text-right ${isHero ? "p-4 sm:p-6 md:p-10" : "p-4 sm:p-6 md:p-10"}`}>
         <div className={isHero ? "max-w-[80%]" : "w-full max-w-3xl"}>
           <p className={`${isHero ? "text-base sm:text-xl md:text-3xl" : "text-sm sm:text-lg md:text-2xl"} line-clamp-2 break-words font-bold leading-snug text-white drop-shadow`}>
             {ad.title || "إعلان"}
@@ -228,8 +228,8 @@ export default function HomePage() {
       </section>
 
       {footerAds.length > 0 && (
-        <section aria-label="إعلانات" className="border-t border-gray-200 bg-white px-3 py-5 sm:px-4 sm:py-7">
-          <div className="mx-auto flex w-full max-w-7xl flex-col items-stretch justify-center gap-3">
+        <section aria-label="إعلانات" className="m-0 w-full border-0 bg-white p-0">
+          <div className="flex w-full flex-col items-stretch justify-center gap-0">
             {footerAds.map((ad) => <AdBanner key={ad.id} ad={ad} size="footer" />)}
           </div>
         </section>
